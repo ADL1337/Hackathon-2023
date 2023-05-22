@@ -154,6 +154,7 @@ cython_debug/
 
 # PyCharm, VSCode & VP
 idea/
+.idea/
 *.vscode
 *.vpp.*
 
