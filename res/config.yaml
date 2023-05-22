@@ -4,3 +4,4 @@ HOTKEYS:
   K_d: right
   K_LSHIFT: shoot
   K_ESCAPE: pause
+  K_BACKSPACE: die
