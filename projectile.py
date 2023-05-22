@@ -1,4 +1,5 @@
 import pygame
+from game_data import WIDTH, HEIGHT
 from entity import MovableEntity
 
 class Projectile(MovableEntity):
