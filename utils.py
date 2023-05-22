@@ -20,6 +20,9 @@ class GameConfig:
         self.path = path
         self.config = self.load(path)
 
+    def __getitem__(self, key):
+        return self.config[key]
+
     @classmethod
     def load(cls, path):
         if path is None:
