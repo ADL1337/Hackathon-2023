@@ -1,79 +1,103 @@
-import pygame
-import time
+import pygame, sys
+from menu import Button
 
 pygame.init()
 
-# Dimensions de la fenêtre
-screen_width = 800
-screen_height = 600
-screen = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption("Ecran de chargement")
+SCREEN = pygame.display.set_mode((1280, 720))
+pygame.display.set_caption("Menu")
 
-# Couleurs
-background_color = (255, 255, 255)
-bar_color = (0, 0, 255)
-text_color = (0, 0, 0)
+BG = pygame.image.load("assets/Background.png")
 
-# Police de caractères
-font = pygame.font.Font(None, 36)
+def get_font(size): # Returns Press-Start-2P in the desired size
+    return pygame.font.Font("assets/font.ttf", size)
 
-# Variables de jeu
-game_running = False
-loading_progress = 0
+def play():
+    while True:
+        PLAY_MOUSE_POS = pygame.mouse.get_pos()
 
-# Boucle principale
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RETURN:  # Touche "Entrée"
-                game_running = True
+        SCREEN.fill("black")
 
-    # Si le jeu est en cours d'exécution, quitter la boucle principale du chargement
-    if game_running:
-        running = False
+        PLAY_TEXT = get_font(45).render("This is the PLAY screen.", True, "White")
+        PLAY_RECT = PLAY_TEXT.get_rect(center=(640, 260))
+        SCREEN.blit(PLAY_TEXT, PLAY_RECT)
 
-    # Effacer l'écran
-    screen.fill(background_color)
+        PLAY_BACK = Button(image=None, pos=(640, 460), 
+                            text_input="BACK", font=get_font(75), base_color="White", hovering_color="Green")
 
-    # Dessiner le texte
-    text = font.render("Chargement en cours...", True, text_color)
-    text_rect = text.get_rect(center=(screen_width // 2, screen_height // 2 - 50))
-    screen.blit(text, text_rect)
+        PLAY_BACK.changeColor(PLAY_MOUSE_POS)
+        PLAY_BACK.update(SCREEN)
 
-    # Dessiner la barre de chargement
-    pygame.draw.rect(screen, bar_color, (screen_width // 4, screen_height // 2, loading_progress, 25))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
+                    main_menu()
 
-    # Mettre à jour l'écran
-    pygame.display.flip()
+        pygame.display.update()
+    
+def options():
+    while True:
+        OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
 
-    # Mettre à jour la progression de chargement
-    loading_progress += 10
-    if loading_progress > screen_width // 2:
-        loading_progress = 0
+        SCREEN.fill("white")
 
-    # Temps de pause (simule le chargement)
-    time.sleep(0.5)
+        OPTIONS_TEXT = get_font(45).render("This is the OPTIONS screen.", True, "Black")
+        OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(640, 260))
+        SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
 
-# Boucle du jeu
-while game_running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            game_running = False
+        OPTIONS_BACK = Button(image=None, pos=(640, 460), 
+                            text_input="BACK", font=get_font(75), base_color="Black", hovering_color="Green")
 
-    # Mettre ici votre logique de jeu
-    # ...
+        OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
+        OPTIONS_BACK.update(SCREEN)
 
-    # Effacer l'écran du jeu
-    screen.fill(background_color)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
+                    main_menu()
 
-    # Dessiner les éléments du jeu
-    # ...
+        pygame.display.update()
 
-    # Mettre à jour l'écran du jeu
-    pygame.display.flip()
+def main_menu():
+    while True:
+        SCREEN.blit(BG, (0, 0))
 
-# Quitter Pygame
-pygame.quit()
+        MENU_MOUSE_POS = pygame.mouse.get_pos()
+
+        MENU_TEXT = get_font(100).render("MAIN MENU", True, "#b68f40")
+        MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
+
+        PLAY_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(640, 250), 
+                            text_input="PLAY", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
+        OPTIONS_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 400), 
+                            text_input="OPTIONS", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
+        QUIT_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(640, 550), 
+                            text_input="QUIT", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
+
+        SCREEN.blit(MENU_TEXT, MENU_RECT)
+
+        for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
+            button.changeColor(MENU_MOUSE_POS)
+            button.update(SCREEN)
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    play()
+                if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    options()
+                if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    pygame.quit()
+                    sys.exit()
+
+        pygame.display.update()
+
+main_menu()
