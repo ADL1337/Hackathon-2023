@@ -1,0 +1,6 @@
+HOTKEYS:
+  K_space: jump
+  K_q: left
+  K_d: right
+  K_LSHIFT: shoot
+  K_ESCAPE: pause
