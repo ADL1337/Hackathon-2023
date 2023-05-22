@@ -7,7 +7,7 @@ class Projectile(MovableEntity):
         self.dammage = dammage
 
     def check_dead(self):
-        if not -self.image.get_width()/2 <= self.rect.x <= WIDTH or not -self.image.get_height()/2 <= self.rect.y <= HEIGHT:
+        if not -self.image.get_width()/2 <= self.rect.x <= WIDTH + 200 or not -self.image.get_height()/2 <= self.rect.y <= HEIGHT:
             self.kill()
 
     def update(self):
