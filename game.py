@@ -1,7 +1,6 @@
 import pygame
 
 from game_data import *
-from utils import GameConfig
 #from menu import Menu # TODO: Create menu.py
 #from game_loop import GameLoop # TODO: Create game_loop.py
 
@@ -10,9 +9,6 @@ class Game:
     pygame.init()
     pygame.display.set_caption(TITLE)
     pygame.mixer.init()
-
-    config = GameConfig(CONFIG_PATH)
-    pygame.mixer.music.set_volume(config["VOLUME"]["music"])
 
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()

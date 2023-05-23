@@ -1,14 +1,14 @@
 {
-  "HOTKEYS": {
-    "K_space": "jump",
-    "K_q": "left",
-    "K_d": "right",
-    "K_LSHIFT": "shoot",
-    "K_ESCAPE": "pause",
-    "K_BACKSPACE": "die"
-  },
-  "VOLUME": {
-    "music": 0.5,
-    "sfx": 0.5
-  }
+    "HOTKEYS": {
+        "K_space": "jump",
+        "K_q": "left",
+        "K_d": "right",
+        "K_LSHIFT": "shoot",
+        "K_ESCAPE": "pause",
+        "K_BACKSPACE": "die"
+    },
+    "VOLUME": {
+        "music": 0.5,
+        "sfx": 0.5
+    }
 }
