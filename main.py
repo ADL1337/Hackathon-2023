@@ -3,18 +3,27 @@ import csv
 
 pygame.init()
 
-largeur_ecran = 1080
-hauteur_ecran = 720
+largeur_ecran = 1200
+hauteur_ecran = 768
 ecran = pygame.display.set_mode((largeur_ecran, hauteur_ecran))
 
-# Chargement de la carte depuis un fichier CSV
-def charger_carte(nom_fichier):
+# import CSV
+def charger_carte(niveau):
+    nom_fichier = f"levels/levels{str(niveau)}.csv"
+    print(nom_fichier)
     carte = []
-    with open(nom_fichier, newline='') as fichier_csv:
-        lecteur_csv = csv.reader(fichier_csv, delimiter=',')
+    with open(nom_fichier, 'r') as fichier:
+        lecteur_csv = csv.reader(fichier)
         for ligne in lecteur_csv:
-            carte.append(list(map(int, ligne)))
+            carte.append(ligne)
     return carte
+
+niveau_courant = 1
+
+def passer_niveau_suivant():
+    global niveau_courant
+    niveau_courant += 1
+    carte = charger_carte(niveau_courant)
 
 GRAVITE = 0.5
 VITESSE_MAX = 3
@@ -24,8 +33,7 @@ BLEU = (0, 0, 255)
 class Joueur(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
-        self.image = pygame.Surface((32, 32))
-        self.image.fill(BLEU)
+        self.image = pygame.image.load('main_character.png').convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -69,22 +77,14 @@ class Joueur(pygame.sprite.Sprite):
 class Bloc(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
-        self.image = pygame.Surface((16, 16))
-        self.image.fill(BLANC)
+        self.image = pygame.image.load('sol.png').convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
 
 joueur = Joueur(16, 16)
 blocs = pygame.sprite.Group()
-carte = charger_carte("map.csv")
-for ligne in range(len(carte)):
-    for colonne in range(len(carte[ligne])):
-        if carte[ligne][colonne] > 1:
-            bloc = Bloc(colonne * 16, ligne * 16)
-            blocs.add(bloc)
-        if carte[ligne][colonne] == 699:
-            print('mort')
+
 
 running = True
 horloge = pygame.time.Clock()
@@ -95,7 +95,7 @@ while running:
         elif evenement.type == pygame.KEYDOWN:
             if evenement.key == pygame.K_SPACE:
                 joueur.sauter()
-
+    carte = charger_carte(niveau_courant)
     touches = pygame.key.get_pressed()
     if touches[pygame.K_LEFT]:
         joueur.vx = -5
