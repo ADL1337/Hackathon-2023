@@ -21,6 +21,8 @@ class Game:
         while True:
             try:
                 cls.menu.run()
+                print("Menu exited")
+                print("Starting game")
             #   cls.game_loop.run()
             except SystemExit:
                 pygame.quit()
