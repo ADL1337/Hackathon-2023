@@ -27,8 +27,6 @@ def passer_niveau_suivant():
 
 GRAVITE = 0.5
 VITESSE_MAX = 3
-BLANC = (255, 255, 255)
-BLEU = (0, 0, 255)
 
 class Joueur(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -78,6 +76,7 @@ class Bloc(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
         self.image = pygame.image.load('sol.png').convert_alpha()
+        self.image.fill(BLANC)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
