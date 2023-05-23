@@ -38,7 +38,6 @@ class Boss1(MovableEntity):
         self.vect = pygame.math.Vector2(0, 0)
         self.time_hurting = pygame.time.get_ticks()
         self.mode = "Hurt"
-        self.state = 0
 
     def hurt_animation(self):
         if not pygame.time.get_ticks() - self.time_hurting > 2000:
@@ -50,7 +49,6 @@ class Boss1(MovableEntity):
                 self.vect = pygame.math.Vector2(0, 0)
                 self.mode = "Graph"
                 self.graph = Grafity(self.images_Grafity[randint(0, len(self.images_Grafity)-1)])
-                self.state = 0
                 self.time_hurting = pygame.time.get_ticks()
 
     def get_dammage(self, player_boost):
@@ -64,15 +62,15 @@ class Boss1(MovableEntity):
             self.blinking = not self.blinking
         if self.live <= 0:
             self.mode = "Dead"
-            self.state = 0
         if self.last_live - self.live > 350:
+            self.state = 0
             self.get_hurt()
 
     def graphe_animation(self):
         if pygame.time.get_ticks() - self.time_hurting >= 7000:
             self.graph.kill()
-            self.mode = "Coming"
             self.state = 0
+            self.mode = "Coming"
         elif pygame.time.get_ticks() - self.time_hurting >= 1500:
             self.rect.x, self.rect.y = WIDTH, self.pos_possibility[randint(0, len(self.pos_possibility)-1)]
             self.graph.update()
@@ -90,13 +88,13 @@ class Boss1(MovableEntity):
                 self.vect = pygame.math.Vector2(0, 1)
                 if self.new_pos < self.rect.y:
                     self.vect = pygame.math.Vector2(0, -1)
-                self.mode = "Jump"
                 self.state = 0
+                self.mode = "Jump"
 
     def return_to_idle(self):
-        self.state = 0
         self.vect = pygame.math.Vector2(0, 0)
         self.time_last_dep = pygame.time.get_ticks()
+        self.state = 0
         self.mode = "Idle"
 
     def time_to_create_proj(self):
