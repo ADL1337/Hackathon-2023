@@ -66,25 +66,3 @@ def statistics_string(stats):
 
 def stat_to_string(stat):
     return stat.replace("_", " ").capitalize()
-
-if __name__ == "__main__":
-    from game_data import PATHS
-
-    def print_dict(d):
-        [print(f"{i}: {k}") for i, k in d.items()]
-
-    test_config = CustomLoader(PATHS["config"])
-    test_config.load()
-    print_dict(test_config["VOLUME"])
-    print_dict(test_config["HOTKEYS"])
-    test_config["VOLUME"]["music"] = 0.1
-    print(type(test_config))
-    test_config["HOTKEYS"]["K_a"] = "left"
-    test_config["HOTKEYS"]["K_z"] = "right"
-    print_dict(test_config["HOTKEYS"])
-    test_config.save()
-    test_config.reset()
-    test_config.save()
-    test_stats = CustomLoader(PATHS["stats"])
-    for k, v in test_stats.data.items():
-        print(f"{stat_to_string(k)}: {v}")

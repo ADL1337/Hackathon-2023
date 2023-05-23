@@ -1,10 +1,11 @@
 import pygame
-from entity import MovableEntity
+
 from game_data import GRAVITY
 
-class Player(MovableEntity):
-    def __init__(self, vect_direct, speed, pos, img_path, *groups):
-        super().__init__(vect_direct, speed, pos, img_path, *groups)
+class Player(pygame.sprite.Sprite):
+    def __init__(self, stats, *groups):
+        super().__init__(*groups)
+        self.stats = stats
         self.boost = False
         self.images_idle = self.create_image_list("img/player/idle/player_idle_", 2)
         self.images_run = self.create_image_list("img/player/run/player_run_", 11)
