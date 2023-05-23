@@ -7,8 +7,9 @@ FONT_SIZE = 32
 BUTTON = {
     "width": 200,
     "height": 50,
-    "bgcolor": (255, 0, 0),
+    "bgcolor": (192, 0, 0),
     "color": (255, 255, 255),
+    "hover_color": (128, 0, 0),
     "centered": True,
     "spacing": 50
 }
@@ -16,11 +17,12 @@ BUTTON = {
 RES_PATH = "res/"
 
 PATHS = {
-    "img": RES_PATH + "img",
-    "sfx": RES_PATH + "sfx",
-    "music": RES_PATH + "music",
+    "img": RES_PATH + "img/",
+    "sfx": RES_PATH + "sfx/",
+    "music": RES_PATH + "music/",
     "config": RES_PATH + "config.json",
-    "stats": RES_PATH + "stats.json"
+    "stats": RES_PATH + "stats.json",
+    "font": RES_PATH + "game_font.ttf"
 }
 
 DEFAULT = {
