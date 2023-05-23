@@ -3,7 +3,6 @@ from json import load, dumps
 
 from game_data import DEFAULT
 
-
 class CustomLoader:
     def __init__(self, path):
         self.path = path

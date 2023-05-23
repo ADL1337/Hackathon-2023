@@ -20,3 +20,13 @@ class Projectile(MovableEntity):
         self.animation(self.images_for_animation, self.sym_x, self.sym_y, self.size_factor)
         self.check_dead()
 
+class PlayerProjectile(pygame.sprite.Sprite):
+    def __init__(self, pos, dir=1, *groups):
+        super().__init__(*groups)
+        self.image = pygame.transform.scale(pygame.image.load("img/projectiles/meatball_4.png").convert_alpha(), (16, 16))
+        self.rect = self.image.get_rect(middleleft=pos)
+        self.speed = 10
+        self.dir = dir
+
+    def update(self):
+        self.rect.x += self.speed * self.dir

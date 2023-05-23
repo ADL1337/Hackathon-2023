@@ -5,9 +5,13 @@ class Entity(pygame.sprite.Sprite):
         super().__init__(*groups)
         self.image = pygame.image.load(img_path+"0.png").convert_alpha() #Prend au départ la première ou la seule image de la collection
         self.hitbox = pygame.mask.from_surface(self.image)
-        self.rect = self.hitbox.get_bounding_rects()[0]
+        self.rect = self.image.get_rect()
         self.rect.x = pos[0]
         self.rect.y = pos[1]
+
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)
+        pygame.draw.rect(screen, (255, 255, 0), self.rect, 2)
 
 class MovableEntity(Entity):
     def __init__(self, vect_direct, speed, pos, img_path, *groups):

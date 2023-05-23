@@ -57,6 +57,8 @@ class Menu:
         self.hotkey_buttons = pygame.sprite.Group()
         self.statistics_buttons = pygame.sprite.Group()
         self.clock = pygame.time.Clock()
+        self.menu_buttons = self.main_buttons
+        self.play = False
 
         self.menu_stack = []
 
@@ -73,42 +75,40 @@ class Menu:
         stats_pannel_size = (WIDTH // 3, HEIGHT // 3)
         self.statistics_buttons.add(TextBlob(self.screen, (WIDTH // 2, HEIGHT // 2), statistics_string(self.stats.data), self.font, size=stats_pannel_size))
         self.statistics_buttons.add(Button(self.screen, (WIDTH // 2, HEIGHT // 2 + stats_pannel_size[1]), "Back", self.font, callback=lambda: "back"))
-    
-    def run(self):
+
+    def check_event(self, event):
+        for button in self.menu_buttons:
+            if button.rect.collidepoint(event.pos):
+                callback = button.callback()
+                print(callback)
+                if callback is None:
+                    pass
+                elif callback == "play":
+                    self.play = True
+                elif callback == "quit":
+                    pygame.event.post(pygame.event.Event(pygame.QUIT))
+                elif callback == "back":
+                    self.menu_buttons = self.menu_stack[-1]
+                    self.menu_stack.pop()
+                elif callback == "statistics":
+                    self.menu_buttons = self.statistics_buttons
+                    self.menu_stack.append(self.main_buttons)
+                elif callback == "options":
+                    self.menu_buttons = self.options_buttons
+                    self.menu_stack.append(self.main_buttons)
+                elif callback == "volume":
+                    print("Option pas encore disponible")
+                else:
+                    if hasattr(self, callback + "_menu"):
+                        new_menu = getattr(self, callback + "_menu")
+                        self.menu_stack.append(new_menu)
+                    else:
+                        print("Error: Menu not implemented")
+
+    def update(self):
         background = pygame.transform.scale(pygame.image.load(RES_PATH + "menu_background.png").convert_alpha(), (WIDTH, HEIGHT))
-        running = True
-        self.menu_stack.append(self.main_menu)
-        while running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    quit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1:
-                        for button in self.menu_buttons:
-                            if button.rect.collidepoint(event.pos):
-                                callback = button.callback()
-                                print(callback)
-                                if callback is None:
-                                    pass
-                                elif callback == "play":
-                                    running = False
-                                elif callback == "quit":
-                                    pygame.event.post(pygame.event.Event(pygame.QUIT))
-                                elif callback == "back":
-                                    self.menu_stack.pop()
-                                else:
-                                    if hasattr(self, callback + "_menu"):
-                                        new_menu = getattr(self, callback + "_menu")
-                                        self.menu_stack.append(new_menu)
-                                    else:
-                                        print("Error: Menu not implemented")
-            
-            self.screen.blit(background, (0, 0))
-            self.menu_stack[-1]()
-            self.menu_buttons.update()
-            pygame.display.update()
-            self.clock.tick(FPS)
+        self.screen.blit(background, (0, 0))
+        self.menu_buttons.update()
     
     def main_menu(self):
         self.menu_buttons = self.main_buttons

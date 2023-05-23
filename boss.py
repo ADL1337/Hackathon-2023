@@ -3,21 +3,46 @@ from random import randint
 from game_data import WIDTH, HEIGHT
 from entity import MovableEntity
 
-class Boss1(MovableEntity):
-    def __init__(self, vect_direct, speed, pos, img_path, *groups):
+class Boss(MovableEntity):
+    def __init__(self, stats, vect_direct, speed, pos, img_path, *groups):
         super().__init__(vect_direct, speed, pos, img_path, *groups)
-        self.name = "Mafia Boss"
-        self.mode = "Idle"
-        self.live = 1000
-        self.last_live = self.live
-        self.image = pygame.transform.flip(self.image, True, False)
         self.last_ProjectileCreate = 0
         self.projectile_Timer = 2500
+        self.name = stats[0]
+        self.mode = "Idle"
+        self.live = stats[1]
+        self.last_live = self.live
+        self.blinking_value = [(0,0,0), (128,128,128)]
+        self.blinking = False
+        self.proj_stats = [(1, 0), 5, (0, 0), "img/projectiles/meatball/meatball_", 12, False, False, 0.5]
+
+    def time_to_create_proj(self):
+        # A assembler avec une fonction dans le main qui check si la sortie est True, si oui crée un projectiles avec comme entrée boss.proj_stats
+        if pygame.time.get_ticks() - self.last_ProjectileCreate >= self.projectile_Timer:
+            self.last_ProjectileCreate = pygame.time.get_ticks()
+            nbre = randint(0, 3)
+            match nbre:
+                case 0:
+                    self.proj_stats[2] = (-100, randint(0, HEIGHT-50))
+                    self.proj_stats[0] = (1, 0)
+                case 1:
+                    self.proj_stats[2] = (WIDTH, randint(0, HEIGHT - 50))
+                    self.proj_stats[0] = (-1, 0)
+                case 2:
+                    self.proj_stats[2] = (randint(0, WIDTH-50), -50)
+                    self.proj_stats[0] = (0, 1)
+                case 3:
+                    self.proj_stats[2] = (randint(0, WIDTH-50), HEIGHT)
+                    self.proj_stats[0] = (0, -1)
+            return True
+
+class Boss1(Boss):
+    def __init__(self, stats, vect_direct, speed, pos, img_path, *groups):
+        super().__init__(stats, vect_direct, speed, pos, img_path, *groups)
+        self.image = pygame.transform.flip(self.image, True, False)
         self.time_hurting = 0
         self.pos_possibility = [0, 300, 600]
         self.time_last_dep = 0
-        self.blinking_value = [(0,0,0), (128,128,128)]
-        self.blinking = False
         self.graph = None
 
         self.images_Run = self.create_image_list("img/boss1/fuite/spr_pepperman_rolling_", 12)
@@ -28,8 +53,6 @@ class Boss1(MovableEntity):
         self.images_Idle = self.create_image_list(img_path, 12)
         self.images_Make_Grafity = self.create_image_list("img/boss1/make_grafiti/spr_peppermanvengeful_", 3)
         self.images_Grafity = self.create_image_list("img/boss1/grafiti/grafiti_", 5)
-
-        self.proj_stats = [(1,0), 5, (0,0), "img/projectiles/meatball/meatball_", 12, False, False, 0.5]
 
     def get_hurt(self):
         self.projectile_Timer -= 500
@@ -48,7 +71,7 @@ class Boss1(MovableEntity):
             if self.rect.x > WIDTH:
                 self.vect = pygame.math.Vector2(0, 0)
                 self.mode = "Graph"
-                self.graph = Grafity(self.images_Grafity[randint(0, len(self.images_Grafity)-1)])
+                self.state = 0
                 self.time_hurting = pygame.time.get_ticks()
 
     def get_dammage(self, player_boost):
@@ -68,12 +91,12 @@ class Boss1(MovableEntity):
 
     def graphe_animation(self):
         if pygame.time.get_ticks() - self.time_hurting >= 7000:
-            self.graph.kill()
+            self.graph = "Die"
             self.state = 0
             self.mode = "Coming"
         elif pygame.time.get_ticks() - self.time_hurting >= 1500:
             self.rect.x, self.rect.y = WIDTH, self.pos_possibility[randint(0, len(self.pos_possibility)-1)]
-            self.graph.update()
+            self.graph = "Ok"
         elif pygame.time.get_ticks() - self.time_hurting >= 1000:
             self.rect.x, self.rect.y = 300,400
         elif pygame.time.get_ticks() - self.time_hurting >= 500:
@@ -97,26 +120,6 @@ class Boss1(MovableEntity):
         self.state = 0
         self.mode = "Idle"
 
-    def time_to_create_proj(self):
-        # A assembler avec une fonction dans le main qui check si la sortie est True, si oui crée un projectiles avec comme entrée boss.proj_stats
-        if pygame.time.get_ticks() - self.last_ProjectileCreate >= self.projectile_Timer:
-            self.last_ProjectileCreate = pygame.time.get_ticks()
-            nbre = randint(0, 3)
-            match nbre:
-                case 0:
-                    self.proj_stats[2] = (-100, randint(0, HEIGHT-50))
-                    self.proj_stats[0] = (1, 0)
-                case 1:
-                    self.proj_stats[2] = (WIDTH, randint(0, HEIGHT - 50))
-                    self.proj_stats[0] = (-1, 0)
-                case 2:
-                    self.proj_stats[2] = (randint(0, WIDTH-50), -50)
-                    self.proj_stats[0] = (0, 1)
-                case 3:
-                    self.proj_stats[2] = (randint(0, WIDTH-50), HEIGHT)
-                    self.proj_stats[0] = (0, -1)
-            return True
-
     def update(self):
         self.move()
         if self.mode == "Hurt":
@@ -136,6 +139,7 @@ class Boss1(MovableEntity):
         elif self.mode == "Idle":
             self.animation(self.images_Idle, True, False, 1)
             self.change_pos()
+            # self.get_dammage(True) Pour test les dégats
         elif self.mode == "Dead":
             self.animation(self.images_Dead, True, False, 1)
         elif self.mode == "Graph":
@@ -143,8 +147,8 @@ class Boss1(MovableEntity):
             self.animation(self.images_Make_Grafity, False, False, 1)
 
 class Grafity(pygame.sprite.Sprite):
-    def __init__(self, skin):
-        super().__init__()
+    def __init__(self, skin, *groups):
+        super().__init__(*groups)
         self.image = pygame.transform.scale_by(pygame.image.load(skin).convert_alpha(), 1.5)
         self.rect = self.image.get_rect(topleft=(self.get_new_pos()))
 
@@ -153,5 +157,3 @@ class Grafity(pygame.sprite.Sprite):
         y = randint(0, 300)
         return x, y
 
-    def update(self):
-        pygame.display.get_surface().blit(self.image, self.rect)

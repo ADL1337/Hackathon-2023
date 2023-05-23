@@ -1,33 +1,34 @@
 import pygame
 
 from game_data import *
-from menu import Menu # TODO: Create menu.py
-#from game_loop import GameLoop # TODO: Create game_loop.py
-
+from menu import Menu
+from level import *
 
 class Game:
-    pygame.init()
-    pygame.display.set_caption(TITLE)
-    pygame.mixer.init()
+    def __init__(self):
+        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        self.menu = Menu(self.screen)
+        self.mode = "Menu"
+        self.plateforms_group = pygame.sprite.Group()
 
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    clock = pygame.time.Clock()
-
-    menu = Menu(screen)
-    #game_loop = GameLoop(screen)
-
-    @classmethod
-    def run(cls):
-        while True:
-            try:
-                cls.menu.run()
-                print("Menu exited")
-                print("Starting game")
-            #   cls.game_loop.run()
-            except SystemExit:
-                pygame.quit()
-                quit()
+    def update(self):
+        self.screen.fill("black")
+        if self.mode == "Menu":
+            self.menu.update()
+            if self.menu.play:
+                self.mode = "Level1"
+                self.menu = None
+                self.level = Level1(self.screen)
+                self.level.create_plat(0)
+        else: # En jeux
+            if self.mode == "Level1":
+                self.level.update()
 
 
-if __name__ == "__main__":
-    Game.run()
+
+
+
+
+
+
+
