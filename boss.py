@@ -7,7 +7,7 @@ class Boss1(MovableEntity):
     def __init__(self, vect_direct, speed, pos, img_path, *groups):
         super().__init__(vect_direct, speed, pos, img_path, *groups)
         self.name = "Mafia Boss"
-        self.mode = "Hurt"
+        self.mode = "Idle"
         self.live = 1000
         self.last_live = self.live
         self.image = pygame.transform.flip(self.image, True, False)
@@ -29,10 +29,14 @@ class Boss1(MovableEntity):
         self.images_Make_Grafity = self.create_image_list("img/boss1/make_grafiti/spr_peppermanvengeful_", 3)
         self.images_Grafity = self.create_image_list("img/boss1/grafiti/grafiti_", 5)
 
+        self.proj_stats = [(1,0), 5, (0,0), self.create_image_list("img/projectiles/meatball/meatball_", 12)]
+
     def get_hurt(self):
+        self.last_live = self.live
         self.vect = pygame.math.Vector2(0, 0)
         self.time_hurting = pygame.time.get_ticks()
         self.mode = "Hurt"
+        self.state = 0
 
     def hurt_animation(self):
         if not pygame.time.get_ticks() - self.time_hurting > 2000:
@@ -45,24 +49,38 @@ class Boss1(MovableEntity):
                 self.mode = "Graph"
                 self.graph = Grafity(self.images_Grafity[randint(0, len(self.images_Grafity)-1)])
                 self.state = 0
+                self.time_hurting = pygame.time.get_ticks()
 
     def get_dammage(self, player_boost):
+        # A appeller lors de la collision entre le projectile du joueur et le boss (prend en entrée un boolean qui indique si l'arme du joueur est sous l'effet d'un boost de dégat)
         if self.mode == "Idle":
-            self.live -= player_boost * 1
+            if player_boost:
+                self.live -= 5
+            else:
+                self.live -= 1
             self.image.fill(self.blinking_value[self.blinking], special_flags=pygame.BLEND_RGB_ADD)
             self.blinking = not self.blinking
         if self.live <= 0:
             self.mode = "Dead"
-        if self.last_live - self.live > 500:
+            self.state = 0
+        if self.last_live - self.live > 350:
             self.get_hurt()
+            self.projectile_Timer -= 500
 
     def graphe_animation(self):
-        if 6500 <= pygame.time.get_ticks() - self.time_hurting < 12000:
-            self.rect.x, self.rect.y = WIDTH, self.pos_possibility[randint(0, len(self.pos_possibility)-1)]
-            self.graph.update()
-        if pygame.time.get_ticks() - self.time_hurting >= 12000:
+        if pygame.time.get_ticks() - self.time_hurting >= 7000:
             self.graph.kill()
             self.mode = "Coming"
+            self.state = 0
+        elif pygame.time.get_ticks() - self.time_hurting >= 1500:
+            self.rect.x, self.rect.y = WIDTH, self.pos_possibility[randint(0, len(self.pos_possibility)-1)]
+            self.graph.update()
+        elif pygame.time.get_ticks() - self.time_hurting >= 1000:
+            self.rect.x, self.rect.y = 300,400
+        elif pygame.time.get_ticks() - self.time_hurting >= 500:
+            self.rect.x, self.rect.y = 800,500
+        else:
+            self.rect.x, self.rect.y = 100,100
 
     def change_pos(self):
         if pygame.time.get_ticks() - self.time_last_dep >= 3000:
@@ -80,18 +98,21 @@ class Boss1(MovableEntity):
         self.time_last_dep = pygame.time.get_ticks()
         self.mode = "Idle"
 
+    def time_to_create_proj(self):
+        # A assembler avec une fonction dans le main qui check si la sortie est True, si oui crée un projectiles avec comme entrée boss.proj_stats
+        if pygame.time.get_ticks() - self.last_ProjectileCreate >= self.projectile_Timer:
+            self.last_ProjectileCreate = pygame.time.get_ticks()
+            return True
+
     def update(self):
         self.move()
-
         if self.mode == "Hurt":
             self.hurt_animation()
-
         elif self.mode == "Coming":
             self.vect = pygame.math.Vector2(-1, 0)
             self.animation(self.images_Run, True)
             if self.rect.x == 1000:
                 self.return_to_idle()
-
         elif self.mode == "Jump":
             if self.vect[1] == -1:
                 self.animation(self.images_Jump, True)
@@ -99,25 +120,25 @@ class Boss1(MovableEntity):
                 self.animation(self.images_Fall, True)
             if self.new_pos - self.rect.y == 0:
                 self.return_to_idle()
-
         elif self.mode == "Idle":
             self.animation(self.images_Idle, True)
             self.change_pos()
-
         elif self.mode == "Dead":
             self.animation(self.images_Dead, True)
-
         elif self.mode == "Graph":
             self.graphe_animation()
-            if pygame.time.get_ticks() - self.time_hurting < 6500:
-                self.rect = self.image.get_rect(topleft=(0, 0))
-                self.animation(self.images_Make_Grafity, False)
+            self.animation(self.images_Make_Grafity, False)
 
 class Grafity(pygame.sprite.Sprite):
     def __init__(self, skin):
         super().__init__()
-        self.image = pygame.image.load(skin).convert_alpha()
-        self.rect = self.image.get_rect(topleft=(0,0))
+        self.image = pygame.transform.scale_by(pygame.image.load(skin).convert_alpha(), 1.5)
+        self.rect = self.image.get_rect(topleft=(self.get_new_pos()))
+
+    def get_new_pos(self):
+        x = randint(0, 700)
+        y = randint(0, 300)
+        return x, y
 
     def update(self):
         pygame.display.get_surface().blit(self.image, self.rect)
