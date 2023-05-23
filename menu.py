@@ -14,7 +14,7 @@ class Button(pygame.sprite.Sprite):
         self.font = font
         self.hover = hover
         self.callback = callback
-    
+
     def update(self):
         if self.hover is True:
             mouse_pos = pygame.mouse.get_pos()
@@ -37,7 +37,7 @@ class TextBlob(pygame.sprite.Sprite):
         self.text = text
         self.font = font
         self.callback = lambda: print("TextBlob has no callback")
-    
+
     def update(self):
         self.surf.fill(BUTTON["bgcolor"])
         self.screen.blit(self.surf, self.rect)
@@ -73,7 +73,7 @@ class Menu:
         stats_pannel_size = (WIDTH // 3, HEIGHT // 3)
         self.statistics_buttons.add(TextBlob(self.screen, (WIDTH // 2, HEIGHT // 2), statistics_string(self.stats.data), self.font, size=stats_pannel_size))
         self.statistics_buttons.add(Button(self.screen, (WIDTH // 2, HEIGHT // 2 + stats_pannel_size[1]), "Back", self.font, callback=lambda: "back"))
-    
+
     def run(self):
         background = pygame.transform.scale(pygame.image.load(RES_PATH + "menu_background.png").convert_alpha(), (WIDTH, HEIGHT))
         running = True
@@ -103,16 +103,16 @@ class Menu:
                                         self.menu_stack.append(new_menu)
                                     else:
                                         print("Error: Menu not implemented")
-            
+
             self.screen.blit(background, (0, 0))
             self.menu_stack[-1]()
             self.menu_buttons.update()
             pygame.display.update()
             self.clock.tick(FPS)
-    
+
     def main_menu(self):
         self.menu_buttons = self.main_buttons
-    
+
     def options_menu(self):
         self.menu_buttons = self.options_buttons
 
