@@ -6,15 +6,12 @@ from projectile import PlayerProjectile
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, *groups):
         super().__init__(*groups)
-        self.image = pygame.image.load("img/player/idle/player_idle_right_0.png").convert_alpha()
+        self.image = pygame.transform.scale_by(pygame.image.load("img/player/idle/player_idle_right_0.png").convert_alpha(), 0.5)
         self.rect = self.image.get_rect(center=pos)
         self.speed = 20
         self.is_alive = True
         self.dx = 0
         self.dy = 0
-        self.animations = {"idle": self.create_image_list("img/player/idle/player_idle_", 2),
-                           "run": self.create_image_list("img/player/run/player_run_", 11),
-                           "shoot": self.create_image_list("img/player/shoot/player_shoot_", 16),}
         self.gravity = GRAVITY
         self.facing = "right"
         self.last_shot = pygame.time.get_ticks()
@@ -22,6 +19,9 @@ class Player(pygame.sprite.Sprite):
         self.image_ratio = 0.5
         self.animation_index = 0
         self.current_animation = "idle"
+        self.animations = {"idle": self.create_image_list("img/player/idle/player_idle_", 2),
+                           "run": self.create_image_list("img/player/run/player_run_", 11),
+                           "shoot": self.create_image_list("img/player/shoot/player_shoot_", 16),}
     
     def run(self, direction=None):
         self.current_animation = "run"
