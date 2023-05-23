@@ -79,6 +79,8 @@ class Player(pygame.sprite.Sprite):
         self.animation_index += 1
         self.animation_index %= len(self.animations[self.current_animation][self.facing])
 
-    @staticmethod
-    def create_image_list(path, count):
-        return [pygame.transform.scale_by(img, 0.5) for img in [pygame.image.load(f"{path}{i}.png").convert_alpha() for i in range(count)]]
+    def create_image_list(self, path, count):
+        res = {}
+        res["right"] = [pygame.transform.scale_by(img, self.image_ratio) for img in [pygame.image.load(f"{path}{i}.png").convert_alpha() for i in range(count)]]
+        res["left"] = [pygame.transform.flip(img, True, False) for img in res["right"]]
+        return res
