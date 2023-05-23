@@ -1,7 +1,7 @@
 import pygame
 
 from game_data import *
-#from menu import Menu # TODO: Create menu.py
+from menu import Menu # TODO: Create menu.py
 #from game_loop import GameLoop # TODO: Create game_loop.py
 
 
@@ -13,17 +13,19 @@ class Game:
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
 
-    #menu = Menu(screen)
+    menu = Menu(screen)
     #game_loop = GameLoop(screen)
 
     @classmethod
     def run(cls):
-        #while True:
-        #    cls.menu.run()
-        #    cls.game_loop.run()
-        pass
+        while True:
+            try:
+                cls.menu.run()
+            #   cls.game_loop.run()
+            except SystemExit:
+                pygame.quit()
+                quit()
 
 
 if __name__ == "__main__":
-    print(Game.config["VOLUME"])
-    print(Game.config["HOTKEYS"])
+    Game.run()
