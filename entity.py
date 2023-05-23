@@ -22,11 +22,8 @@ class MovableEntity(Entity):
         self.rect.x += self.vect[0] * self.speed
         self.rect.y += self.vect[1] * self.speed
 
-    def animation(self, liste, need_mirror):
-        if need_mirror:
-            self.image = pygame.transform.flip(pygame.image.load(liste[self.state]).convert_alpha(), True, False)
-        else:
-            self.image = pygame.image.load(liste[self.state]).convert_alpha()
+    def animation(self, liste, sym_x, sym_y, size_factor):
+        self.image = pygame.transform.scale_by(pygame.transform.flip(pygame.image.load(liste[self.state]).convert_alpha(), sym_x, sym_y), size_factor)
         self.state += 1
         if self.state > len(liste) - 1:
             self.state = 0

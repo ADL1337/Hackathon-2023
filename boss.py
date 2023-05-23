@@ -12,7 +12,7 @@ class Boss1(MovableEntity):
         self.last_live = self.live
         self.image = pygame.transform.flip(self.image, True, False)
         self.last_ProjectileCreate = 0
-        self.projectile_Timer = 2000
+        self.projectile_Timer = 2500
         self.time_hurting = 0
         self.pos_possibility = [0, 300, 600]
         self.time_last_dep = 0
@@ -29,9 +29,11 @@ class Boss1(MovableEntity):
         self.images_Make_Grafity = self.create_image_list("img/boss1/make_grafiti/spr_peppermanvengeful_", 3)
         self.images_Grafity = self.create_image_list("img/boss1/grafiti/grafiti_", 5)
 
-        self.proj_stats = [(1,0), 5, (0,0), self.create_image_list("img/projectiles/meatball/meatball_", 12)]
+        self.proj_stats = [(1,0), 5, (0,0), "img/projectiles/meatball/meatball_", 12, False, False, 0.5]
 
     def get_hurt(self):
+        self.projectile_Timer -= 500
+        self.proj_stats[1] += 5
         self.last_live = self.live
         self.vect = pygame.math.Vector2(0, 0)
         self.time_hurting = pygame.time.get_ticks()
@@ -40,10 +42,10 @@ class Boss1(MovableEntity):
 
     def hurt_animation(self):
         if not pygame.time.get_ticks() - self.time_hurting > 2000:
-            self.animation(self.images_Hurt, True)
+            self.animation(self.images_Hurt, True, False, 1)
         else:
             self.vect = pygame.math.Vector2(1, 0)
-            self.animation(self.images_Run, False)
+            self.animation(self.images_Run, False, False, 1)
             if self.rect.x > WIDTH:
                 self.vect = pygame.math.Vector2(0, 0)
                 self.mode = "Graph"
@@ -65,7 +67,6 @@ class Boss1(MovableEntity):
             self.state = 0
         if self.last_live - self.live > 350:
             self.get_hurt()
-            self.projectile_Timer -= 500
 
     def graphe_animation(self):
         if pygame.time.get_ticks() - self.time_hurting >= 7000:
@@ -102,6 +103,20 @@ class Boss1(MovableEntity):
         # A assembler avec une fonction dans le main qui check si la sortie est True, si oui crée un projectiles avec comme entrée boss.proj_stats
         if pygame.time.get_ticks() - self.last_ProjectileCreate >= self.projectile_Timer:
             self.last_ProjectileCreate = pygame.time.get_ticks()
+            nbre = randint(0, 3)
+            match nbre:
+                case 0:
+                    self.proj_stats[2] = (-100, randint(0, HEIGHT-50))
+                    self.proj_stats[0] = (1, 0)
+                case 1:
+                    self.proj_stats[2] = (WIDTH, randint(0, HEIGHT - 50))
+                    self.proj_stats[0] = (-1, 0)
+                case 2:
+                    self.proj_stats[2] = (randint(0, WIDTH-50), -50)
+                    self.proj_stats[0] = (0, 1)
+                case 3:
+                    self.proj_stats[2] = (randint(0, WIDTH-50), HEIGHT)
+                    self.proj_stats[0] = (0, -1)
             return True
 
     def update(self):
@@ -110,24 +125,24 @@ class Boss1(MovableEntity):
             self.hurt_animation()
         elif self.mode == "Coming":
             self.vect = pygame.math.Vector2(-1, 0)
-            self.animation(self.images_Run, True)
+            self.animation(self.images_Run, True, False, 1)
             if self.rect.x == 1000:
                 self.return_to_idle()
         elif self.mode == "Jump":
             if self.vect[1] == -1:
-                self.animation(self.images_Jump, True)
+                self.animation(self.images_Jump, True, False, 1)
             else:
-                self.animation(self.images_Fall, True)
+                self.animation(self.images_Fall, True, False, 1)
             if self.new_pos - self.rect.y == 0:
                 self.return_to_idle()
         elif self.mode == "Idle":
-            self.animation(self.images_Idle, True)
+            self.animation(self.images_Idle, True, False, 1)
             self.change_pos()
         elif self.mode == "Dead":
-            self.animation(self.images_Dead, True)
+            self.animation(self.images_Dead, True, False, 1)
         elif self.mode == "Graph":
             self.graphe_animation()
-            self.animation(self.images_Make_Grafity, False)
+            self.animation(self.images_Make_Grafity, False, False, 1)
 
 class Grafity(pygame.sprite.Sprite):
     def __init__(self, skin):
