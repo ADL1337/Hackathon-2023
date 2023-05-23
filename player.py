@@ -1,5 +1,6 @@
 import pygame
 from entity import MovableEntity
+from game_data import GRAVITY
 
 class Player(MovableEntity):
     def __init__(self, vect_direct, speed, pos, img_path, *groups):
@@ -14,6 +15,7 @@ class Player(MovableEntity):
         self.last_ProjectileCreate = 1000
         self.projectile_Timer = 1000
         self.left = False
+        self.gravity = GRAVITY
 
     def run(self):
         if self.vect[0] != 0:
@@ -41,3 +43,6 @@ class Player(MovableEntity):
     def update(self):
         self.move()
         self.run()
+        self.gravity += GRAVITY
+        print(self.gravity)
+        self.rect.y += self.gravity
