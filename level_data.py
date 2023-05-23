@@ -1,4 +1,4 @@
 level_1 = {
-    'calc1': 'maptest.csv'#,
+    'terrain': 'maptest.csv'#,
     # 'objet': ''
 }

@@ -6,6 +6,7 @@ pygame.init()
 
 tile_width = 80
 tile_height = 48
+tile_size = 16
 screen_height = 720 #tile_width * tile_height
 screen_width = 1280
 screen = pygame.display.set_mode((screen_width,screen_height))
