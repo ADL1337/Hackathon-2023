@@ -1,6 +1,8 @@
 import pygame
+
 from projectile import Projectile
 from utils import CustomLoader
+
 
 class Level:
     def __init__(self, boss, screen, player):
