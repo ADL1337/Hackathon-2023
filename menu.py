@@ -45,7 +45,6 @@ class TextBlob(pygame.sprite.Sprite):
             draw_text(self.screen, line, self.font, (self.rect.centerx, self.rect.top + i * FONT_SIZE), BUTTON["color"], True)
 
 
-
 class Menu:
     config = CustomLoader(PATHS["config"])
     stats = CustomLoader(PATHS["stats"])
@@ -92,6 +91,8 @@ class Menu:
                                 print(callback)
                                 if callback is None:
                                     pass
+                                elif callback == "play":
+                                    running = False
                                 elif callback == "quit":
                                     pygame.event.post(pygame.event.Event(pygame.QUIT))
                                 elif callback == "back":

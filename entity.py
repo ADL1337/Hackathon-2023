@@ -1,7 +1,5 @@
 import pygame
 
-# ! Format d'image requis nom_numéro.png (Toujours compté à partir de 0 mettre numéro à 0 même si image seul)
-# Exemple boulette_0.png
 class Entity(pygame.sprite.Sprite):
     def __init__(self, pos, img_path, *groups): #img_path = chemin de l'image sans le 'numéro.png'
         super().__init__(*groups)
