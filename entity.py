@@ -6,8 +6,10 @@ class Entity(pygame.sprite.Sprite):
     def __init__(self, pos, img_path, *groups): #img_path = chemin de l'image sans le 'numéro.png'
         super().__init__(*groups)
         self.image = pygame.image.load(img_path+"0.png").convert_alpha() #Prend au départ la première ou la seule image de la collection
-        self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = pygame.mask.from_surface(self.image)
+        self.rect = self.hitbox.get_bounding_rects()[0]
+        self.rect.x = pos[0]
+        self.rect.y = pos[1]
 
 class MovableEntity(Entity):
     def __init__(self, vect_direct, speed, pos, img_path, *groups):
@@ -23,10 +25,9 @@ class MovableEntity(Entity):
         self.rect.y += self.vect[1] * self.speed
 
     def animation(self, liste, sym_x, sym_y, size_factor):
-        if self.state > len(liste) - 1:
-            self.state = 0
         self.image = pygame.transform.scale_by(pygame.transform.flip(pygame.image.load(liste[self.state]).convert_alpha(), sym_x, sym_y), size_factor)
         self.state += 1
+        self.state %= len(liste)
 
     def create_image_list(self, path, limit):
         listes = []
