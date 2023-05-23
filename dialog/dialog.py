@@ -23,9 +23,9 @@ character_width = character_image.get_width()
 character_height = character_image.get_height()
 
 # Mafia boss
-character_image = pygame.image.load("../main_character.png")
-character_width = character_image.get_width()
-character_height = character_image.get_height()
+character_image2 = pygame.image.load("../mafiaboss.png")
+character_width2 = character_image2.get_width()
+character_height2 = character_image2.get_height()
 
 class DialogueBox:
     def __init__(self, x, y, width, height, message, next_dialogue=None):
