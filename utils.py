@@ -57,6 +57,14 @@ def draw_button(surf, text, font, pos, width, height, bgcolor=(255, 0, 0), color
         button_rect.topleft = pos
     surf.blit(button_surf, button_rect)
 
+def statistics_string(stats):
+    res = ""
+    for k, v in stats.items():
+        res += f"{stat_to_string(k)}: {v}\n"
+    return res
+
+def stat_to_string(stat):
+    return stat.replace("_", " ").capitalize()
 
 if __name__ == "__main__":
     from game_data import PATHS
@@ -75,3 +83,7 @@ if __name__ == "__main__":
     print_dict(test_config["HOTKEYS"])
     test_config.save()
     test_config.reset()
+    test_config.save()
+    test_stats = CustomLoader(PATHS["stats"])
+    for k, v in test_stats.data.items():
+        print(f"{stat_to_string(k)}: {v}")
