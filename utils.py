@@ -37,6 +37,7 @@ class CustomLoader:
     def reset(self):
         self.data = DEFAULT[self.path.split("/")[-1].split(".")[0]] # "config.json" -> "config"
 
+
 def draw_text(surf, text, font, pos, color=(255, 255, 255), centered=True):
     text_surf = font.render(text, True, color)
     text_rect = text_surf.get_rect()

@@ -4,6 +4,7 @@ FPS = 60
 TITLE = "Pizza Vigilante"
 FONT_SIZE = 32
 GRAVITY = 1
+TILESIZE = 16
 
 BUTTON = {
     "width": 200,
