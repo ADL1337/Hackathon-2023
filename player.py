@@ -21,7 +21,12 @@ class Player(pygame.sprite.Sprite):
         self.jump_count = 0
         self.max_jump_count = 2
         self.animation_index = 0
+        #STATS
         self.distance_travelled = 0
+        self.dead_number = 0
+        self.playtime = 0
+        self.jump_number = 0
+        self.shoot_number = 0
         self.current_animation = "idle"
         self.animations = {"idle": self.create_image_list(f"{PATHS['img']}player/idle/player_idle_", 2),
                            "run": self.create_image_list(f"{PATHS['img']}player/run/player_run_", 11),
@@ -44,10 +49,12 @@ class Player(pygame.sprite.Sprite):
         self.current_animation = "shoot"
         if pygame.time.get_ticks() - self.last_shot >= self.shot_timer:
             self.last_shot = pygame.time.get_ticks()
+            self.shoot_number += 1
             return PlayerProjectile(getattr(self.rect, f"mid{self.facing}"), 1 if self.facing == "right" else -1)
 
     def jump(self):
         if self.jump_count < self.max_jump_count:
+            self.jump_number += 1
             self.jump_count += 1
             self.dy = -20
 
