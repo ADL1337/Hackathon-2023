@@ -17,6 +17,8 @@ class Player(pygame.sprite.Sprite):
         self.last_shot = pygame.time.get_ticks()
         self.shot_timer = 500
         self.image_ratio = 0.5
+        self.jump_count = 0
+        self.max_jump_count = 2
         self.animation_index = 0
         self.current_animation = "idle"
         self.animations = {"idle": self.create_image_list("img/player/idle/player_idle_", 2),
@@ -40,7 +42,9 @@ class Player(pygame.sprite.Sprite):
         return PlayerProjectile(getattr(self.rect, f"mid{self.facing}"), 1 if self.facing == "right" else -1)
 
     def jump(self):
-        self.dy = -20
+        if self.jump_count < self.max_jump_count:
+            self.jump_count += 1
+            self.dy = -20
     
     def _collision(self, obstacles):
         collision_list = pygame.sprite.spritecollide(self, obstacles, False)
@@ -49,6 +53,7 @@ class Player(pygame.sprite.Sprite):
                 if self.dy > 0 and self.rect.bottom > entity.rect.top:
                     self.rect.bottom = entity.rect.top
                     self.dy = 0
+                    self.jump_count = 0
                 elif self.dy < 0 and self.rect.top < entity.rect.bottom:
                     self.rect.top = entity.rect.bottom
                     self.dy = 0
