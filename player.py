@@ -1,12 +1,12 @@
 import pygame
 
-from game_data import GRAVITY
+from game_data import GRAVITY, PATHS
 from projectile import PlayerProjectile
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, *groups):
         super().__init__(*groups)
-        self.image = pygame.transform.scale_by(pygame.image.load("img/player/idle/player_idle_right_0.png").convert_alpha(), 0.5)
+        self.image = pygame.transform.scale_by(pygame.image.load(f"{PATHS['img']}player/idle/player_idle_right_0.png").convert_alpha(), 0.5)
         self.rect = self.image.get_rect(center=pos)
         self.speed = 20
         self.is_alive = True
@@ -21,9 +21,9 @@ class Player(pygame.sprite.Sprite):
         self.max_jump_count = 2
         self.animation_index = 0
         self.current_animation = "idle"
-        self.animations = {"idle": self.create_image_list("img/player/idle/player_idle_", 2),
-                           "run": self.create_image_list("img/player/run/player_run_", 11),
-                           "shoot": self.create_image_list("img/player/shoot/player_shoot_", 16),}
+        self.animations = {"idle": self.create_image_list(f"{PATHS['img']}player/idle/player_idle_", 2),
+                           "run": self.create_image_list(f"{PATHS['img']}player/run/player_run_", 11),
+                           "shoot": self.create_image_list(f"{PATHS['img']}player/shoot/player_shoot_", 16),}
     
     def run(self, direction=None):
         self.current_animation = "run"
@@ -75,7 +75,6 @@ class Player(pygame.sprite.Sprite):
     def update(self, obstacles):
         self._move()
         self._apply_gravity()
-        self.run()
         self._animate()
         self._collision(obstacles)
 
