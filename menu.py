@@ -51,9 +51,9 @@ class Menu:
     stats = CustomLoader(PATHS["stats"])
     def __init__(self, screen):
         self.screen = screen
-        self.background = pygame.transform.scale(pygame.image.load(RES_PATH + "menu_background.png").convert_alpha(), (WIDTH, HEIGHT))
-        self.game_title = pygame.image.load(RES_PATH + "game_title.png").convert_alpha()
-        self.font = pygame.font.Font(PATHS["font"], FONT_SIZE)
+        self.background = pygame.transform.scale(pygame.image.load(RES_PATH + "img/menu_background.png").convert_alpha(), (WIDTH, HEIGHT))
+        self.game_title = pygame.image.load(RES_PATH + "img/game_title.png").convert_alpha()
+        self.font = pygame.font.Font("res/font/game_font.TTF", FONT_SIZE)
         self.main_buttons = pygame.sprite.Group()
         self.options_buttons = pygame.sprite.Group()
         self.volume_buttons = pygame.sprite.Group()

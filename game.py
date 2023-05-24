@@ -11,7 +11,7 @@ class Game:
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.menu = Menu(self.screen)
         self.mode = "Menu"
-        self.player = Player((0, 300))
+        self.player = Player((0, 1000))
         self.plateforms_group = pygame.sprite.Group()
         self.loader = CustomLoader("res/stats.json")
         self.pause_menu = None

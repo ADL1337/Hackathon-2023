@@ -33,6 +33,7 @@ class Level():
         self.dial_img = ()
         self.time_last_pause = 0
         self.boss = None
+        self.dead_sound = pygame.mixer.Sound("res/song/dead_sound.mp3")
 
     def create_plat(self, number):
         for plat_infos in self.zones[number]:
@@ -74,7 +75,7 @@ class Level():
                 self.win.kill()
                 self.load_new_zone()
             else:
-                self.mode = "LevelEnd"
+                self.mode = "LevelEnd" # NEEED CINEMATIQUE DE FIN
 
     def check_boss_dead(self):
         if self.boss.live <= 0:
@@ -89,6 +90,7 @@ class Level():
                     self.boss.get_dammage(True, pygame.time.get_ticks())
 
     def player_dead(self):
+        self.dead_sound.play()
         self.player.dead_number += 1
         if self.boss != None:
             self.boss.kill()
@@ -114,7 +116,7 @@ class Level():
     def load_new_zone(self):
         if self.graph != None:
             self.graph.kill()
-        self.player.rect.center = 50, 200
+        self.player.rect.center = 50, 700
         for plat in self.plateforms_sprites:
             plat.kill()
         for shoot in self.player_shoot_sprites:
@@ -133,11 +135,12 @@ class Level():
 class Level1(Level):
     def __init__(self, screen, player, zone_number):
         super().__init__(screen, player)
-        self.zones = [[[100, 400, 200, 20], [300, 300, 150, 20], [900, 200, 100, 20]],
-                      [[100, 400, 200, 20], [600, 300, 150, 20], [500, 200, 100, 20]],
-                      [[100, 500, 200, 20], [200, 300, 150, 20], [500, 200, 100, 20]],
-                      [[0, 400, 200, 20], [300, 300, 150, 20], [500, 200, 100, 20], [1120, 141, 120, 20],  [1120, 741, 120, 20], [1120, 442, 120, 20]]]
-        self.win_pos = [[600, 600], [600, 600], [600, 600], [600, 600]]
+        self.zones = [[[600, 370, 100, 20], [300, 300, 100, 20], [1000, 200, 100, 20], [10, 700, 100, 20], [200, 650, 75, 20], [350, 550, 75, 20], [200, 450, 25, 20], [800, 295, 50, 20]],
+                      [[10, 700, 100, 20], [200, 650, 25, 20], [300, 500, 25, 20], [200, 400, 25, 20], [300, 300, 25, 20], [750, 350, 75, 20], [500, 200, 100, 20], [950, 200, 25, 20]],
+                      [[10, 750, 100, 20], [300, 700, 100, 20], [600, 700, 25, 20], [800, 600, 50, 20], [1100, 500, 75, 20], [800, 400, 50, 20], [500, 400, 25, 20], [275, 300, 25, 20], [500, 200, 25, 20], [900, 200, 25, 20]],
+                      [[10, 700, 100, 20], [320, 600, 100, 20], [640, 450, 100, 20], [800, 250, 100, 20], [200, 400, 100, 20], [300, 250, 100, 20], [500, 150, 100, 20], [1120, 141, 120, 20],  [1120, 741, 120, 20], [1120, 442, 120, 20]]]
+
+        self.win_pos = [[1150, 50], [1150, 50], [1150, 50], [1150, 50]]
         self.graph = None
         self.create_plat(self.zone_number)
         self.zone_number = zone_number
