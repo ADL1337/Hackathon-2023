@@ -51,6 +51,8 @@ class Menu:
     stats = CustomLoader(PATHS["stats"])
     def __init__(self, screen):
         self.screen = screen
+        self.background = pygame.transform.scale(pygame.image.load(RES_PATH + "menu_background.png").convert_alpha(), (WIDTH, HEIGHT))
+        self.game_title = pygame.image.load(RES_PATH + "game_title.png").convert_alpha()
         self.font = pygame.font.Font(PATHS["font"], FONT_SIZE)
         self.main_buttons = pygame.sprite.Group()
         self.options_buttons = pygame.sprite.Group()
@@ -120,8 +122,8 @@ class Menu:
                         print("Error: Menu not implemented")
 
     def update(self):
-        background = pygame.transform.scale(pygame.image.load(RES_PATH + "menu_background.png").convert_alpha(), (WIDTH, HEIGHT))
-        self.screen.blit(background, (0, 0))
+        self.screen.blit(self.background, (0, 0))
+        self.screen.blit(self.game_title, (WIDTH // 2 - self.game_title.get_width() // 2, 0))
         self.menu_buttons.update()
     
     def main_menu(self):
