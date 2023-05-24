@@ -1,5 +1,5 @@
 import pygame
-from game_data import WIDTH, HEIGHT
+from game_data import WIDTH, HEIGHT, PATHS
 from entity import MovableEntity
 
 class Projectile(MovableEntity):
@@ -23,7 +23,7 @@ class Projectile(MovableEntity):
 class PlayerProjectile(pygame.sprite.Sprite):
     def __init__(self, pos, dir=1, *groups):
         super().__init__(*groups)
-        self.image = pygame.transform.scale(pygame.image.load("img/projectiles/meatball_4.png").convert_alpha(), (16, 16))
+        self.image = pygame.transform.scale(pygame.image.load(f"{PATHS['img']}projectiles/meatball/meatball_4.png").convert_alpha(), (16, 16))
         self.rect = self.image.get_rect(middleleft=pos)
         self.speed = 10
         self.dir = dir
