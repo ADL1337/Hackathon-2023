@@ -14,7 +14,7 @@ class Boss(MovableEntity):
         self.last_live = self.live
         self.blinking_value = [(0,0,0), (128,128,128)]
         self.blinking = False
-        self.proj_stats = [(1, 0), 5, (0, 0), "img/projectiles/meatball/meatball_", 12, False, False, 0.5]
+        self.proj_stats = [(1, 0), 5, (0, 0), "res/img/projectiles/meatball/meatball_", 12, False, False, 0.5]
 
     def time_to_create_proj(self):
         # A assembler avec une fonction dans le main qui check si la sortie est True, si oui crée un projectiles avec comme entrée boss.proj_stats
@@ -40,19 +40,20 @@ class Boss1(Boss):
     def __init__(self, stats, vect_direct, speed, pos, img_path, *groups):
         super().__init__(stats, vect_direct, speed, pos, img_path, *groups)
         self.image = pygame.transform.flip(self.image, True, False)
+        self.hitbox = pygame.mask.from_surface(self.image)
         self.time_hurting = 0
         self.pos_possibility = [0, 300, 600]
         self.time_last_dep = 0
         self.graph = None
-
-        self.images_Run = self.create_image_list("img/boss1/fuite/spr_pepperman_rolling_", 12)
-        self.images_Jump = self.create_image_list("img/boss1/jump/spr_pepperman_jump_", 9)
-        self.images_Hurt = self.create_image_list("img/boss1/hurt/spr_pepperman_scared_", 5)
-        self.images_Fall = self.create_image_list("img/boss1/fall/spr_pepperman_groundpoundstart_", 6)
-        self.images_Dead = self.create_image_list("img/boss1/dead/spr_pepperman_hurtplayer_", 3)
+        self.time_get_touch = 0
+        self.images_Run = self.create_image_list("res/img/boss1/fuite/spr_pepperman_rolling_", 12)
+        self.images_Jump = self.create_image_list("res/img/boss1/jump/spr_pepperman_jump_", 9)
+        self.images_Hurt = self.create_image_list("res/img/boss1/hurt/spr_pepperman_scared_", 5)
+        self.images_Fall = self.create_image_list("res/img/boss1/fall/spr_pepperman_groundpoundstart_", 6)
+        self.images_Dead = self.create_image_list("res/img/boss1/dead/spr_pepperman_hurtplayer_", 3)
         self.images_Idle = self.create_image_list(img_path, 12)
-        self.images_Make_Grafity = self.create_image_list("img/boss1/make_grafiti/spr_peppermanvengeful_", 3)
-        self.images_Grafity = self.create_image_list("img/boss1/grafiti/grafiti_", 5)
+        self.images_Make_Grafity = self.create_image_list("res/img/boss1/make_grafiti/spr_peppermanvengeful_", 3)
+        self.images_Grafity = self.create_image_list("res/img/boss1/grafiti/grafiti_", 5)
 
     def get_hurt(self):
         self.projectile_Timer -= 500
@@ -74,13 +75,16 @@ class Boss1(Boss):
                 self.state = 0
                 self.time_hurting = pygame.time.get_ticks()
 
-    def get_dammage(self, player_boost):
+    def get_dammage(self, player_boost, timer):
         # A appeller lors de la collision entre le projectile du joueur et le boss (prend en entrée un boolean qui indique si l'arme du joueur est sous l'effet d'un boost de dégat)
-        if self.mode == "Idle":
-            if player_boost:
-                self.live -= 5
-            else:
-                self.live -= 1
+        if timer - self.time_get_touch > 200:
+            if self.mode == "Idle":
+                if player_boost:
+                    self.live -= 10
+                else:
+                    self.live -= 5
+            self.time_get_touch = timer
+
             self.image.fill(self.blinking_value[self.blinking], special_flags=pygame.BLEND_RGB_ADD)
             self.blinking = not self.blinking
         if self.live <= 0:
@@ -139,8 +143,8 @@ class Boss1(Boss):
         elif self.mode == "Idle":
             self.animation(self.images_Idle, True, False, 1)
             self.change_pos()
-            # self.get_dammage(True) Pour test les dégats
         elif self.mode == "Dead":
+            self.state = 0
             self.animation(self.images_Dead, True, False, 1)
         elif self.mode == "Graph":
             self.graphe_animation()
@@ -157,3 +161,11 @@ class Grafity(pygame.sprite.Sprite):
         y = randint(0, 300)
         return x, y
 
+class Door(pygame.sprite.Sprite):
+    def __init__(self, pos, img_path, size_factor, *groups): #img_path = chemin de l'image sans le 'numéro.png'
+        super().__init__(*groups)
+        self.image = pygame.transform.scale_by(pygame.image.load(img_path+"0.png").convert_alpha(), 0.5) #Prend au départ la première ou la seule image de la collection
+        self.hitbox = pygame.mask.from_surface(self.image)
+        self.rect = self.image.get_rect()
+        self.rect.x = pos[0]
+        self.rect.y = pos[1]

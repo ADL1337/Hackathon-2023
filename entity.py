@@ -11,7 +11,6 @@ class Entity(pygame.sprite.Sprite):
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
-        pygame.draw.rect(screen, (255, 255, 0), self.rect, 2)
 
 class MovableEntity(Entity):
     def __init__(self, vect_direct, speed, pos, img_path, *groups):

@@ -18,8 +18,7 @@ class Game:
             if self.menu.play:
                 self.mode = "Level1"
                 self.menu = None
-                self.level = Level1(self.screen)
-                self.level.create_plat(0)
+                self.level = Level1(self.screen, 0)
         else: # En jeux
             if self.mode == "Level1":
                 self.level.update()
