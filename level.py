@@ -87,7 +87,6 @@ class Level():
                     self.boss.get_dammage(True, pygame.time.get_ticks())
 
     def player_dead(self):
-        self.dead_sound.play()
         self.player.dead_number += 1
         if self.boss != None:
             self.boss.kill()
@@ -97,6 +96,7 @@ class Level():
             self.graph = None
         self.zone_number = 0
         self.load_new_zone()
+        self.dead_sound.play()
 
     def check_player_outside(self):
         if not -200 <= self.player.rect.x <= WIDTH or not -200 <= self.player.rect.y <= HEIGHT:
