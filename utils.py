@@ -1,7 +1,8 @@
 from pygame import Surface
+import pygame
 from json import load, dumps
 
-from game_data import DEFAULT
+from game_data import DEFAULT, WIDTH, HEIGHT, PATHS
 
 class CustomLoader:
     def __init__(self, path):
@@ -45,6 +46,19 @@ def draw_text(surf, text, font, pos, color=(255, 255, 255), centered=True):
     else:
         text_rect.topleft = pos
     surf.blit(text_surf, text_rect)
+
+def animate_endgame(surf):
+    endgame_pic = pygame.image.load(PATHS["img"] + "twin_towers.jpg").convert_alpha()
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+        
+        surf.fill((0, 0, 0))
+        surf.blit(endgame_pic, (0, 0))
+        draw_text(surf, "You Win!", pygame.font.Font(PATHS["font"], 100), (WIDTH // 2, HEIGHT // 2))
+        pygame.display.update()
 
 def draw_button(surf, text, font, pos, width, height, bgcolor=(255, 0, 0), color=(255, 255, 255), centered=True):
     button_surf = Surface(width, height)

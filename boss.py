@@ -82,7 +82,7 @@ class Boss1(Boss):
     def get_dammage(self, player_boost, timer):
         # A appeller lors de la collision entre le projectile du joueur et le boss (prend en entrée un boolean qui indique si l'arme du joueur est sous l'effet d'un boost de dégat)
         if timer - self.time_get_touch > 200:
-            deg = 5
+            deg = 20
             if player_boost:
                 deg = int(deg * 2)
             if self.mode == "Jump":

@@ -3,7 +3,7 @@ import pygame
 from game_data import *
 from menu import Menu, MenuPause
 from level import *
-from utils import CustomLoader
+from utils import CustomLoader, animate_endgame
 from player import Player
 
 class Game:
@@ -57,12 +57,5 @@ class Game:
                 if self.level.mode == "Pause":
                     self.pause_menu = MenuPause(self.screen)
                     self.mode = "Pause"
-
-
-
-
-
-
-
-
-
+                if self.level.mode  == "LevelEnd":
+                    animate_endgame(self.screen)

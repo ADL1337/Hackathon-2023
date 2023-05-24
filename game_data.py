@@ -25,7 +25,7 @@ PATHS = {
     "music": RES_PATH + "music/",
     "config": RES_PATH + "config.json",
     "stats": RES_PATH + "stats.json",
-    "font": RES_PATH + "game_font.ttf"
+    "font": RES_PATH + "font/game_font.ttf"
 }
 
 DEFAULT = {
