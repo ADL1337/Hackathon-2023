@@ -41,7 +41,7 @@ class Player(pygame.sprite.Sprite):
         self.current_animation = "shoot"
         if pygame.time.get_ticks() - self.last_shot >= self.shot_timer:
             self.last_shot = pygame.time.get_ticks()
-        return PlayerProjectile(getattr(self.rect, f"mid{self.facing}"), 1 if self.facing == "right" else -1)
+            return PlayerProjectile(getattr(self.rect, f"mid{self.facing}"), 1 if self.facing == "right" else -1)
 
     def jump(self):
         if self.jump_count < self.max_jump_count:
