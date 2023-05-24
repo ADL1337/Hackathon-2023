@@ -33,6 +33,8 @@ class Player(pygame.sprite.Sprite):
         elif direction == "right":
             self.facing = "right"
             self.dx = self.speed
+        else:
+            self.dx = 0
         self.image = self.animations["idle"][self.facing][0]
 
     def shoot(self):
