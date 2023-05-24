@@ -56,6 +56,7 @@ class Boss1(Boss):
         self.images_Grafity = self.create_image_list("res/img/boss1/grafiti/grafiti_", 4)
         self.hit_sound = pygame.mixer.Sound("res/song/Vine-boom-sound-effect.mp3")
         self.hurt_sound = pygame.mixer.Sound("res/song/Social-credit-siren-sound-effect.mp3")
+        self.dial_end = False
 
     def get_hurt(self):
         self.projectile_Timer -= 500
@@ -146,7 +147,8 @@ class Boss1(Boss):
                 self.return_to_idle()
         elif self.mode == "Idle":
             self.animation(self.images_Idle, True, False, 1)
-            self.change_pos()
+            if self.dial_end:
+                self.change_pos()
         elif self.mode == "Dead":
             self.state = 0
             self.animation(self.images_Dead, True, False, 1)

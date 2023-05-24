@@ -15,7 +15,8 @@ class Game:
         self.plateforms_group = pygame.sprite.Group()
         self.loader = CustomLoader("res/stats.json")
         self.pause_menu = None
-        self.level_number = 1
+        self.saver = CustomLoader("res/save.json")
+        self.level_number = self.saver["level_number"]
         self.levels = [Level1]
 
     def save_stat(self):
@@ -29,7 +30,9 @@ class Game:
             if self.menu.play:
                 self.mode = "Level"
                 self.menu = None
-                self.level = self.levels[self.level_number-1](self.screen, self.player, 0)
+                self.saver = CustomLoader("res/save.json")
+                self.level_number = self.saver["level_number"]
+                self.level = self.levels[self.level_number-1](self.screen, self.player, self.saver["level_zone"])
         elif self.mode == "Pause":
             self.pause_menu.update()
             if self.pause_menu.etat == "Quit":
@@ -37,6 +40,11 @@ class Game:
             if self.pause_menu.etat == "Continue":
                 self.mode = "Level"
                 self.level.mode = "InGame"
+            if self.pause_menu.etat == "Save":
+                self.saver["level_number"] = self.level_number
+                self.saver["level_zone"] = self.level.zone_number
+                self.saver.save()
+                self.pause_menu.etat = "Continue"
         else: # En jeux
             if self.level.mode == "Pause" and self.mode != "Pause":
                 self.mode = "Pause"

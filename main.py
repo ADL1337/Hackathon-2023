@@ -27,6 +27,11 @@ while running:
                     game.menu.check_event(event)
                 if game.mode == "Pause":
                     game.pause_menu.check_event(event)
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                if game.mode == "Pause":
+                    game.mode = "Level"
+                    game.level.mode = "InGame"
         if event.type == SCREEN_UPDATE:
             game.update()
             pygame.display.update()

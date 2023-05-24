@@ -5,6 +5,7 @@ TITLE = "Pizza Vigilante"
 FONT_SIZE = 32
 GRAVITY = 3
 TILESIZE = 16
+DIALOG_FONTSIZE = 24
 
 BUTTON = {
     "width": 200,

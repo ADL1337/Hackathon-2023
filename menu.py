@@ -2,6 +2,7 @@ import pygame
 
 from game_data import *
 from utils import *
+from utils import CustomLoader
 
 
 class Button(pygame.sprite.Sprite):
@@ -55,11 +56,11 @@ class Menu:
         self.options_buttons = pygame.sprite.Group()
         self.volume_buttons = pygame.sprite.Group()
         self.hotkey_buttons = pygame.sprite.Group()
+        self.reprendre_buttons = pygame.sprite.Group()
         self.statistics_buttons = pygame.sprite.Group()
         self.clock = pygame.time.Clock()
         self.menu_buttons = self.main_buttons
         self.play = False
-
         self.menu_stack = []
 
     # I LITERALLY REMADE TKINTER BUT WORSE
@@ -71,6 +72,10 @@ class Menu:
         self.options_buttons.add(Button(self.screen, (WIDTH // 2, HEIGHT // 2 - BUTTON["height"] - BUTTON["spacing"]), "Volume", self.font, callback=lambda: "volume"))
         self.options_buttons.add(Button(self.screen, (WIDTH // 2, HEIGHT // 2), "Hotkeys", self.font, callback=lambda: "hotkeys"))
         self.options_buttons.add(Button(self.screen, (WIDTH // 2, HEIGHT // 2 + BUTTON["height"] + BUTTON["spacing"]), "Back", self.font, callback=lambda: "back"))
+
+        self.reprendre_buttons.add(Button(self.screen, (WIDTH // 2, HEIGHT // 2 - BUTTON["height"] - BUTTON["spacing"]), "Continue", self.font, callback=lambda: "continue"))
+        self.reprendre_buttons.add(Button(self.screen, (WIDTH // 2, HEIGHT // 2), "New Partie", self.font, callback=lambda: "reset"))
+        self.reprendre_buttons.add(Button(self.screen, (WIDTH // 2, HEIGHT // 2 + BUTTON["height"] + BUTTON["spacing"]), "Back", self.font, callback=lambda: "back"))
 
         stats_pannel_size = (WIDTH // 3, HEIGHT // 3)
         self.statistics_buttons.add(TextBlob(self.screen, (WIDTH // 2, HEIGHT // 2), statistics_string(self.stats.data), self.font, size=stats_pannel_size))
@@ -84,6 +89,15 @@ class Menu:
                 if callback is None:
                     pass
                 elif callback == "play":
+                    self.menu_buttons = self.reprendre_buttons
+                    self.menu_stack.append(self.main_buttons)
+                elif callback == "continue":
+                    self.play = True
+                elif callback == "reset":
+                    saver = CustomLoader("res/save.json")
+                    saver["level_number"] = 1
+                    saver["level_zone"] = 0
+                    saver.save()
                     self.play = True
                 elif callback == "quit":
                     pygame.event.post(pygame.event.Event(pygame.QUIT))
