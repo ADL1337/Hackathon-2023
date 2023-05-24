@@ -118,3 +118,36 @@ class Menu:
 
     def statistics_menu(self):
         self.menu_buttons = self.statistics_buttons
+
+class MenuPause:
+    def __init__(self, screen):
+        self.screen = screen
+        self.font = pygame.font.Font(PATHS["font"], FONT_SIZE)
+        self.main_buttons = pygame.sprite.Group()
+        self.clock = pygame.time.Clock()
+        self.etat = "InPlace"
+
+        # I LITERALLY REMADE TKINTER BUT WORSE
+        self.main_buttons.add(Button(self.screen, (WIDTH // 2, HEIGHT // 2 - BUTTON["height"] - BUTTON["spacing"]), "Continuer", self.font, callback=lambda: "continue"))
+        self.main_buttons.add(Button(self.screen, (WIDTH // 2, HEIGHT // 2), "Sauvegarder", self.font, callback=lambda: "save"))
+        self.main_buttons.add(Button(self.screen, (WIDTH // 2, HEIGHT // 2 + BUTTON["height"] + BUTTON["spacing"]), "Quitter", self.font, callback=lambda: "quit"))
+
+    def check_event(self, event):
+        for button in self.main_buttons:
+            if button.rect.collidepoint(event.pos):
+                callback = button.callback()
+                print(callback)
+                if callback == "continue":
+                    self.etat = "Continue"
+                elif callback == "save":
+                    self.etat = "Save"
+                elif callback == "quit":
+                    self.etat = "Quit"
+                else:
+                    print("Error: Menu not implemented")
+
+    def update(self):
+        background = pygame.transform.scale(pygame.image.load(RES_PATH + "menu_background.png").convert_alpha(),
+                                            (WIDTH, HEIGHT))
+        self.screen.blit(background, (0, 0))
+        self.main_buttons.update()

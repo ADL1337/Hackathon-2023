@@ -3,7 +3,7 @@ HEIGHT = 780
 FPS = 60
 TITLE = "Pizza Vigilante"
 FONT_SIZE = 32
-GRAVITY = 1
+GRAVITY = 3
 TILESIZE = 16
 
 BUTTON = {

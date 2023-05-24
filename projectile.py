@@ -26,8 +26,13 @@ class PlayerProjectile(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(pygame.image.load("res/img/projectiles/meatball/meatball_4.png").convert_alpha(), (16, 16))
         self.rect = self.image.get_rect(midleft=pos)
         self.hitbox = pygame.mask.from_surface(self.image)
-        self.speed = 10
+        self.speed = 30
         self.dir = dir
 
+    def check_dead(self):
+        if not -200 <= self.rect.x <= WIDTH or not -200 <= self.rect.y <= HEIGHT:
+            self.kill()
+
     def update(self):
+        self.check_dead()
         self.rect.x += self.speed * self.dir

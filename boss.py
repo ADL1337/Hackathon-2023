@@ -7,14 +7,14 @@ class Boss(MovableEntity):
     def __init__(self, stats, vect_direct, speed, pos, img_path, *groups):
         super().__init__(vect_direct, speed, pos, img_path, *groups)
         self.last_ProjectileCreate = 0
-        self.projectile_Timer = 2500
+        self.projectile_Timer = 2000
         self.name = stats[0]
         self.mode = "Idle"
         self.live = stats[1]
         self.last_live = self.live
         self.blinking_value = [(0,0,0), (128,128,128)]
         self.blinking = False
-        self.proj_stats = [(1, 0), 5, (0, 0), "res/img/projectiles/meatball/meatball_", 12, False, False, 0.5]
+        self.proj_stats = [(1, 0), 10, (0, 0), "res/img/projectiles/meatball/meatball_", 12, False, False, 0.4]
 
     def time_to_create_proj(self):
         # A assembler avec une fonction dans le main qui check si la sortie est True, si oui crée un projectiles avec comme entrée boss.proj_stats
@@ -53,7 +53,9 @@ class Boss1(Boss):
         self.images_Dead = self.create_image_list("res/img/boss1/dead/spr_pepperman_hurtplayer_", 3)
         self.images_Idle = self.create_image_list(img_path, 12)
         self.images_Make_Grafity = self.create_image_list("res/img/boss1/make_grafiti/spr_peppermanvengeful_", 3)
-        self.images_Grafity = self.create_image_list("res/img/boss1/grafiti/grafiti_", 5)
+        self.images_Grafity = self.create_image_list("res/img/boss1/grafiti/grafiti_", 4)
+        self.hit_sound = pygame.mixer.Sound("res/song/Vine-boom-sound-effect.mp3")
+        self.hurt_sound = pygame.mixer.Sound("res/song/Social-credit-siren-sound-effect.mp3")
 
     def get_hurt(self):
         self.projectile_Timer -= 500
@@ -61,6 +63,7 @@ class Boss1(Boss):
         self.last_live = self.live
         self.vect = pygame.math.Vector2(0, 0)
         self.time_hurting = pygame.time.get_ticks()
+        self.hurt_sound.play()
         self.mode = "Hurt"
 
     def hurt_animation(self):
@@ -80,7 +83,7 @@ class Boss1(Boss):
         if timer - self.time_get_touch > 200:
             if self.mode == "Idle":
                 if player_boost:
-                    self.live -= 10
+                    self.live -= 100
                 else:
                     self.live -= 5
             self.time_get_touch = timer
@@ -131,7 +134,7 @@ class Boss1(Boss):
         elif self.mode == "Coming":
             self.vect = pygame.math.Vector2(-1, 0)
             self.animation(self.images_Run, True, False, 1)
-            if self.rect.x == 1000:
+            if self.rect.x == 1100:
                 self.return_to_idle()
         elif self.mode == "Jump":
             if self.vect[1] == -1:
@@ -151,8 +154,9 @@ class Boss1(Boss):
             self.animation(self.images_Make_Grafity, False, False, 1)
 
 class Grafity(pygame.sprite.Sprite):
-    def __init__(self, skin, *groups):
+    def __init__(self, skins, *groups):
         super().__init__(*groups)
+        skin = skins[randint(0, len(skins)-1)]
         self.image = pygame.transform.scale_by(pygame.image.load(skin).convert_alpha(), 1.5)
         self.rect = self.image.get_rect(topleft=(self.get_new_pos()))
 

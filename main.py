@@ -10,15 +10,23 @@ pygame.time.set_timer(SCREEN_UPDATE, 50)
 game = Game()
 running = True
 
+def quit_game(game):
+    pygame.quit()
+    game.save_stat()
+    quit()
+
 while running:
     for event in pygame.event.get():
+        if game.mode == "Quit":
+            quit_game(game)
         if event.type == pygame.QUIT:
-            pygame.quit()
-            quit()
+            quit_game(game)
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 if game.mode == "Menu":
                     game.menu.check_event(event)
+                if game.mode == "Pause":
+                    game.pause_menu.check_event(event)
         if event.type == SCREEN_UPDATE:
             game.update()
             pygame.display.update()
