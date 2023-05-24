@@ -35,7 +35,7 @@ class Player(pygame.sprite.Sprite):
             self.dx = self.speed
         else:
             self.dx = 0
-        self.image = self.animations["idle"][self.facing][0]
+            self.current_animation = "idle"
 
     def shoot(self):
         self.current_animation = "shoot"
