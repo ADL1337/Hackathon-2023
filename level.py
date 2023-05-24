@@ -32,6 +32,7 @@ class Level():
         self.dial_font = pygame.font.SysFont("Arial", 24)
         self.dial_img = ()
         self.time_last_pause = 0
+        self.boss = None
 
     def create_plat(self, number):
         for plat_infos in self.zones[number]:
@@ -88,10 +89,12 @@ class Level():
                     self.boss.get_dammage(True, pygame.time.get_ticks())
 
     def player_dead(self):
+        self.player.dead_number += 1
         if self.boss != None:
             self.boss.kill()
             self.boss = None
-        self.dialogue.kill()
+        if self.dialogue != None:
+            self.dialogue.kill()
         if self.graph != None:
             self.graph.kill()
             self.graph = None

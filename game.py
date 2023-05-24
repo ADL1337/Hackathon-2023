@@ -21,6 +21,10 @@ class Game:
 
     def save_stat(self):
         self.loader["distance_travelled"] += int(self.player.distance_travelled / 100)
+        self.loader["playtime"] += int(pygame.time.get_ticks())
+        self.loader["death_count"] += int(self.player.dead_number)
+        self.loader["shots_fired"] += int(self.player.shoot_number)
+        self.loader["jump_count"] += int(self.player.jump_number)
         self.loader.save()
 
     def update(self):
