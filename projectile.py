@@ -25,7 +25,7 @@ class PlayerProjectile(pygame.sprite.Sprite):
         super().__init__(*groups)
         self.image = pygame.transform.scale(pygame.image.load(f"{PATHS['img']}projectiles/meatball/meatball_4.png").convert_alpha(), (16, 16))
         self.rect = self.image.get_rect(middleleft=pos)
-        self.speed = 10
+        self.speed = 30
         self.dir = dir
 
     def update(self):
