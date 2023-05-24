@@ -81,11 +81,12 @@ class Boss1(Boss):
     def get_dammage(self, player_boost, timer):
         # A appeller lors de la collision entre le projectile du joueur et le boss (prend en entrée un boolean qui indique si l'arme du joueur est sous l'effet d'un boost de dégat)
         if timer - self.time_get_touch > 200:
-            if self.mode == "Idle":
-                if player_boost:
-                    self.live -= 100
-                else:
-                    self.live -= 5
+            deg = 5
+            if player_boost:
+                deg = int(deg * 2)
+            if self.mode == "Jump":
+                deg = int(deg/2)
+            self.live -= deg
             self.time_get_touch = timer
 
             self.image.fill(self.blinking_value[self.blinking], special_flags=pygame.BLEND_RGB_ADD)

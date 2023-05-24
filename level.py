@@ -76,7 +76,7 @@ class Level():
         for shoot in self.player_shoot_sprites:
             if pygame.sprite.collide_mask(shoot, self.boss) != None:
                 shoot.kill()
-                if self.boss.mode == "Idle":
+                if self.boss.mode == "Idle" or self.boss.mode == "Jump":
                     self.boss.hit_sound.play()
                     self.boss.get_dammage(True, pygame.time.get_ticks())
 
