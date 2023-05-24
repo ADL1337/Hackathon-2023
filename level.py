@@ -126,6 +126,7 @@ class Level():
             self.music_running = False
             if self.win != None:
                 self.win.kill()
+                self.win = None
             self.phase = "Dial"
             self.dialogue = Dialog(self.dialogue_cont, self.dial_img, self.dial_font)
             self.dialogue.sound.play()
