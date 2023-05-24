@@ -32,6 +32,7 @@ class Player(pygame.sprite.Sprite):
         self.animations = {"idle": self.create_image_list(f"{PATHS['img']}player/idle/player_idle_", 2),
                            "run": self.create_image_list(f"{PATHS['img']}player/run/player_run_", 11),
                            "shoot": self.create_image_list(f"{PATHS['img']}player/shoot/player_shoot_", 16), }
+        self.shoot_sound = pygame.mixer.Sound("res/song/shoot_sound.mp3")
 
     def run(self, direction=None):
         self.current_animation = "run"
@@ -49,6 +50,7 @@ class Player(pygame.sprite.Sprite):
     def shoot(self):
         self.current_animation = "shoot"
         if pygame.time.get_ticks() - self.last_shot >= self.shot_timer:
+            self.shoot_sound.play()
             self.last_shot = pygame.time.get_ticks()
             self.shoot_number += 1
             return PlayerProjectile(getattr(self.rect, f"mid{self.facing}"), 1 if self.facing == "right" else -1)

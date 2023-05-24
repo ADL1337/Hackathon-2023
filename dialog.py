@@ -16,7 +16,7 @@ class Dialog(pygame.sprite.Sprite):
         self.is_end = False
         self.current_text = ""
         self.last_show = pygame.time.get_ticks()
-        self.wait_time = 5000
+        self.wait_time = 4000
         self.font = font
         self.bgcolor = (128, 128, 128)
         self.surf.fill(self.bgcolor)

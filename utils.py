@@ -47,17 +47,17 @@ def draw_text(surf, text, font, pos, color=(255, 255, 255), centered=True):
         text_rect.topleft = pos
     surf.blit(text_surf, text_rect)
 
-def animate_endgame(surf):
-    endgame_pic = pygame.image.load(PATHS["img"] + "twin_towers.jpg").convert_alpha()
+def animate_endgame(surf, timer):
+    endgame_pic = pygame.transform.scale(pygame.image.load(PATHS["img"] + "/bg/twin_towers_rat.jpg").convert_alpha(), (1280, 768))
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-        
+        if pygame.time.get_ticks() - timer > 1000:
+            endgame_pic = pygame.transform.scale(pygame.image.load(PATHS["img"] + "/bg/twin_towers_ratboom.jpg").convert_alpha(), (1280, 768))
         surf.fill((0, 0, 0))
         surf.blit(endgame_pic, (0, 0))
-        draw_text(surf, "You Win!", pygame.font.Font(PATHS["font"], 100), (WIDTH // 2, HEIGHT // 2))
         pygame.display.update()
 
 def draw_button(surf, text, font, pos, width, height, bgcolor=(255, 0, 0), color=(255, 255, 255), centered=True):

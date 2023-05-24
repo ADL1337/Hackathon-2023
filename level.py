@@ -6,6 +6,7 @@ from boss import *
 from plateform import Plateforme
 from entity import *
 from dialog import Dialog
+from game_data import PATHS
 
 
 class Level():
@@ -27,13 +28,15 @@ class Level():
         self.win_pos = [[], [], [], []]
         self.win = None
         self.graph = None
-        self.dialogue = None
         self.dialogue_cont = []
         self.dial_font = pygame.font.SysFont("Arial", 24)
         self.dial_img = ()
         self.time_last_pause = 0
         self.boss = None
         self.dead_sound = pygame.mixer.Sound("res/song/dead_sound.mp3")
+        self.boss_sound = None
+        self.music_running = False
+        self.time_boss_dead = 0
 
     def create_plat(self, number):
         for plat_infos in self.zones[number]:
@@ -59,27 +62,21 @@ class Level():
                 if isinstance(proj, PlayerProjectile):
                     self.player_shoot_sprites.add(proj)
         if keys[pygame.K_ESCAPE]:
+            pygame.mixer.stop()
             if pygame.time.get_ticks() - self.time_last_pause > 1500:
                 self.mode = "Pause"
                 self.time_last_pause = pygame.time.get_ticks()
 
-        else:
-            if keys[pygame.K_RETURN]:
-                self.dialogue.kill()
-                self.phase = "Fight"
-
     def check_change_level(self):
         if pygame.sprite.collide_mask(self.player, self.win) != None:
-            if self.zone_number != 3:
-                self.zone_number += 1
-                self.win.kill()
-                self.load_new_zone()
-            else:
-                self.mode = "LevelEnd" # NEEED CINEMATIQUE DE FIN
+            self.zone_number += 1
+            self.win.kill()
+            self.load_new_zone()
 
     def check_boss_dead(self):
         if self.boss.live <= 0:
-            self.win = Door(self.win_pos[self.zone_number], "res/img/boss1/boss_1_door_", 0.5, self.visibles_sprites)
+            self.mode = "LevelEnd"
+            self.time_boss_dead = pygame.time.get_ticks()
 
     def check_boss_get_shoot(self):
         for shoot in self.player_shoot_sprites:
@@ -95,8 +92,6 @@ class Level():
         if self.boss != None:
             self.boss.kill()
             self.boss = None
-        if self.dialogue != None:
-            self.dialogue.kill()
         if self.graph != None:
             self.graph.kill()
             self.graph = None
@@ -114,6 +109,7 @@ class Level():
                 self.player_dead()
 
     def load_new_zone(self):
+        pygame.mixer.stop()
         if self.graph != None:
             self.graph.kill()
         self.player.rect.center = 50, 700
@@ -127,6 +123,9 @@ class Level():
         if self.zone_number != 3:
             self.win = Door(self.win_pos[self.zone_number], "res/img/decors/change_level_door_", 0.5, self.visibles_sprites)
         elif self.zone_number == 3:
+            self.music_running = False
+            if self.win != None:
+                self.win.kill()
             self.phase = "Dial"
             self.dialogue = Dialog(self.dialogue_cont, self.dial_img, self.dial_font)
             self.dialogue.sound.play()
@@ -144,9 +143,12 @@ class Level1(Level):
         self.graph = None
         self.create_plat(self.zone_number)
         self.zone_number = zone_number
+        self.dialogue_cont = [("Hé, Piquanto ! Prêt à te faire mettre K.O ?", "Ha ! Tu penses vraiment pouvoir entrer sur mon territoire comme ça ?"), ("Je vais te montrer qu’à l’armée on n’est pas des zoulettes !","Sache que tu ne fais pas le poids contre moi."), (" Ne sois pas si sûr de toi ! je vais te faire mordre la poussière avant \n même que tu ne le réalises.","Fais de ton mieux. Mais je vais te montrer ce que signifie vraiment \n avoir du cran."), ("Les pizzas ne sont pas les seules choses que je sais livrer. Je suis prêt à \n te servir une bonne leçon.","Tu te surestimes. Tu n'as aucune idée de ce qui t'attend, je ne ferai \n aucune exception pour toi."), ("Je me battrai jusqu'à mon dernier souffle. Prépare-toi à sentir la \n transpiration de mes couilles !","Tant de paroles, mais seuls les actes comptent. Et crois-moi, je vais te \n montrer ce que signifie être un véritable chef de la mafia."), (" Je ne reculerai pas, j'ai l'honneur de mon côté et je me battrai avec \n bravoure.","Prépare-toi à être vaincu par le meilleur pizzaïolo soldat !"),]
+        self.dial_img = (pygame.image.load("res/img/player/idle/player_idle_0.png"), pygame.image.load("res/img/boss1/make_grafiti/spr_peppermanvengeful_0.png"))
+        self.bgs = [pygame.image.load(f"{PATHS['img']}bg/zone{i}.png").convert_alpha() for i in range(1, 4)]
+        self.bgs.append(pygame.image.load(f"{PATHS['img']}bg/boss1.jpg").convert_alpha())
+        self.boss_sound = pygame.mixer.Sound("res/song/Skibidi-Bop-Yes-Yes-Yes-x-Bloody-Mary-_FULL-VERSION_-_dMpkB_YMzyE_.mp3")
         self.load_new_zone()
-        self.dialogue_cont = [("Hé, Piquanto ! Prêt à te faire mettre K.O ?", "Ha ! Tu penses vraiment pouvoir entrer sur mon territoire comme ça ?"), ("Je vais te montrer qu’à l’armée on n’est pas des zoulettes !","Sache que tu ne fais pas le poids contre moi."), (" Ne sois pas si sûr de toi ! je vais te faire mordre la poussière avant \n même que tu ne le réalises.","Fais de ton mieux. Mais je vais te montrer ce que signifie vraiment \n avoir du cran."), ("Les pizzas ne sont pas les seules choses que je sais livrer. Je suis prêt à \n te servir une bonne leçon.","Tu te surestimes. Tu n'as aucune idée de ce qui t'attend, je ne ferai \n aucune exception pour toi."), ("Je me battrai jusqu'à mon dernier souffle. Prépare-toi à sentir la \n transpiration de mes couilles !","Tant de paroles, mais seuls les actes comptent. Et crois-moi, je vais te \n montrer ce que signifie être un véritable chef de la mafia."), (" Je ne reculerai pas, j'ai l'honneur de mon côté et je me battrai avec \n bravoure.","Prépare-toi à être vaincu par le meilleur pizzaïolo soldat !"), ("On verra bien qui sortira vainqueur de ce combat.","Nous verrons, que le duel commence ! J’arrive te sauver Peppino Spaghetti !")]
-        self.dial_img = (pygame.image.load("res/img/boss1/hurt/spr_pepperman_scared_0.png"), pygame.image.load("res/img/boss1/dead/spr_pepperman_hurtplayer_0.png"))
 
     def check_for_graph(self):
         if self.boss != None:
@@ -168,6 +170,7 @@ class Level1(Level):
                     self.player.run("stop")
                     self.dialogue.update(self.screen)
                     if self.dialogue.is_end:
+                        self.boss_sound.play()
                         self.boss.dial_end = True
                         self.phase = "Fight"
                         self.dialogue.kill()

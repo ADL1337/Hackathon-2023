@@ -71,6 +71,8 @@ class Menu:
         self.play = False
         self.menu_stack = []
 
+        self.play_sound = pygame.mixer.Sound("res/song/Ara Ara sound effect.mp3")
+
     # I LITERALLY REMADE TKINTER BUT WORSE
         self.main_buttons.add(Button(self.screen, (WIDTH // 2, HEIGHT // 2 - BUTTON["height"] - BUTTON["spacing"]), "Play", self.font, callback=lambda: "play"))
         self.main_buttons.add(Button(self.screen, (WIDTH // 2, HEIGHT // 2), "Options", self.font, callback=lambda: "options"))
@@ -92,6 +94,7 @@ class Menu:
     def check_event(self, event):
         for button in self.menu_buttons:
             if button.rect.collidepoint(event.pos):
+                self.play_sound.play()
                 callback = button.callback()
                 print(callback)
                 if callback is None:
@@ -101,12 +104,14 @@ class Menu:
                     self.menu_stack.append(self.main_buttons)
                 elif callback == "continue":
                     self.play = True
+                    pygame.mixer.stop()
                 elif callback == "reset":
                     saver = CustomLoader("res/save.json")
                     saver["level_number"] = 1
                     saver["level_zone"] = 0
                     saver.save()
                     self.play = True
+                    pygame.mixer.stop()
                 elif callback == "quit":
                     pygame.event.post(pygame.event.Event(pygame.QUIT))
                 elif callback == "back":
@@ -160,8 +165,10 @@ class MenuPause:
                 callback = button.callback()
                 print(callback)
                 if callback == "continue":
+                    pygame.mixer.stop()
                     self.etat = "Continue"
                 elif callback == "save":
+                    pygame.mixer.stop()
                     self.etat = "Save"
                 elif callback == "quit":
                     self.etat = "Quit"
@@ -169,7 +176,7 @@ class MenuPause:
                     print("Error: Menu not implemented")
 
     def update(self):
-        background = pygame.transform.scale(pygame.image.load(RES_PATH + "menu_background.png").convert_alpha(),
+        background = pygame.transform.scale(pygame.image.load(PATHS["img"] + "menu_background.png").convert_alpha(),
                                             (WIDTH, HEIGHT))
         self.screen.blit(background, (0, 0))
         self.main_buttons.update()
