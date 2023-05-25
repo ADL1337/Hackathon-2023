@@ -37,6 +37,7 @@ class Level():
         self.boss_sound = None
         self.music_running = False
         self.time_boss_dead = 0
+        self.saver = CustomLoader("res/save.json")
 
     def create_plat(self, number):
         for plat_infos in self.zones[number]:
@@ -66,6 +67,9 @@ class Level():
             if pygame.time.get_ticks() - self.time_last_pause > 1500:
                 self.mode = "Pause"
                 self.time_last_pause = pygame.time.get_ticks()
+        if self.phase == "Dial":
+            if keys[pygame.K_RETURN]:
+                self.dialogue.is_end = True
 
     def check_change_level(self):
         if pygame.sprite.collide_mask(self.player, self.win) != None:
@@ -94,7 +98,8 @@ class Level():
         if self.graph != None:
             self.graph.kill()
             self.graph = None
-        self.zone_number = 0
+        save = CustomLoader("res/save.json")
+        self.zone_number = save["level_zone"]
         self.load_new_zone()
         self.dead_sound.play()
 
@@ -136,7 +141,7 @@ class Level1(Level):
     def __init__(self, screen, player, zone_number):
         super().__init__(screen, player)
         self.zones = [[[600, 370, 100, 20], [300, 300, 100, 20], [1000, 200, 100, 20], [10, 700, 100, 20], [200, 650, 75, 20], [350, 550, 75, 20], [200, 450, 25, 20], [800, 295, 50, 20]],
-                      [[10, 700, 100, 20], [200, 650, 25, 20], [300, 500, 25, 20], [200, 400, 25, 20], [300, 300, 25, 20], [750, 350, 75, 20], [500, 200, 100, 20], [950, 200, 25, 20]],
+                      [[10, 700, 150, 20], [200, 650, 25, 20], [300, 500, 25, 20], [200, 400, 25, 20], [300, 300, 25, 20], [750, 350, 75, 20], [500, 200, 100, 20], [950, 200, 25, 20]],
                       [[10, 750, 100, 20], [300, 700, 100, 20], [600, 700, 25, 20], [800, 600, 50, 20], [1100, 500, 75, 20], [800, 400, 50, 20], [500, 400, 25, 20], [275, 300, 25, 20], [500, 200, 25, 20], [900, 200, 25, 20]],
                       [[10, 700, 100, 20], [320, 600, 100, 20], [640, 450, 100, 20], [800, 250, 100, 20], [200, 400, 100, 20], [300, 250, 100, 20], [500, 150, 100, 20], [1120, 141, 120, 20],  [1120, 741, 120, 20], [1120, 442, 120, 20]]]
 
@@ -171,13 +176,16 @@ class Level1(Level):
                     self.player.run("stop")
                     self.dialogue.update(self.screen)
                     if self.dialogue.is_end:
+                        self.enddial_timer = pygame.time.get_ticks()
+                        pygame.mixer.stop()
                         self.boss_sound.play()
                         self.boss.dial_end = True
                         self.phase = "Fight"
                         self.dialogue.kill()
                 else:
+                    if pygame.time.get_ticks() - self.enddial_timer > 1000:
+                        self.create_boss_proj()
                     self.check_for_graph()
-                    self.create_boss_proj()
                     self.check_boss_get_shoot()
                     self.check_boss_dead()
 

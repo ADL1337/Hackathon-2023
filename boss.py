@@ -57,6 +57,7 @@ class Boss1(Boss):
         self.hit_sound = pygame.mixer.Sound("res/song/Vine-boom-sound-effect.mp3")
         self.hurt_sound = pygame.mixer.Sound("res/song/Social-credit-siren-sound-effect.mp3")
         self.dial_end = False
+        self.timer_touch = 0
 
     def get_hurt(self):
         self.projectile_Timer -= 500
@@ -89,9 +90,10 @@ class Boss1(Boss):
                 deg = int(deg/2)
             self.live -= deg
             self.time_get_touch = timer
+            if not self.blinking:
+                self.blinking = True
+                self.timer_touch = pygame.time.get_ticks()
 
-            self.image.fill(self.blinking_value[self.blinking], special_flags=pygame.BLEND_RGB_ADD)
-            self.blinking = not self.blinking
         if self.live <= 0:
             self.mode = "Dead"
         if self.last_live - self.live > 350:
@@ -131,6 +133,9 @@ class Boss1(Boss):
 
     def update(self):
         self.move()
+        if self.blinking:
+            if pygame.time.get_ticks() - self.timer_touch > 50:
+                self.blinking = False
         if self.mode == "Hurt":
             self.hurt_animation()
         elif self.mode == "Coming":
@@ -155,6 +160,7 @@ class Boss1(Boss):
         elif self.mode == "Graph":
             self.graphe_animation()
             self.animation(self.images_Make_Grafity, False, False, 1)
+        self.image.fill(self.blinking_value[self.blinking], special_flags=pygame.BLEND_RGB_ADD)
 
 class Grafity(pygame.sprite.Sprite):
     def __init__(self, skins, *groups):
